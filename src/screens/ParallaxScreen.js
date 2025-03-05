@@ -9,23 +9,26 @@ const slides = [
     {
         id: "1",
         title: "Explora",
-        text: "Cocinar nunca fue tan fácil y divertido. ¡Atrévete a experimentar en la cocina!",
+        text: "Cocinar nunca fue tan fácil y divertido.",
         image: require("../../assets/images/Salad.webp"),
-        backgroundColor: "#1dab20" //47b50d
+        backgroundColor: "#1dab20", //47b50d
+        buttonColorText: "#1dab20"
     },
     {
         id: "2",
         title: "Descubre",
         text: "Prueba recetas nuevas y mejora tus habilidades culinarias cada día.",
         image: require("../../assets/images/FastFood.webp"),
-        backgroundColor: "#ff5a2f"
+        backgroundColor: "#ff5a2f",
+        buttonColorText: "#ff5a2f"
     },
     {
         id: "3",
         title: "Comparte",
         text: "Invita a tus amigos y disfruta de una buena comida juntos.",
         image: require("../../assets/images/Postre2.webp"),
-        backgroundColor: "#0277BD"
+        backgroundColor: "#0277BD",
+        buttonColorText: "#0277BD"
     }
 ];
 
@@ -40,6 +43,14 @@ export default function ParallaxScreen() {
         inputRange: slides.map((_, i) => i * wp("100%")),
         outputRange: slides.map(slide => slide.backgroundColor),
     });
+
+    const handleNext = () => {
+        if (currentIndex < slides.length - 1) {
+            flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
+        } else {
+            navigation.navigate("Home");
+        }
+    };
 
     return (
         <Animated.View style={[styles.container, { backgroundColor }]}>
@@ -86,11 +97,11 @@ export default function ParallaxScreen() {
             </View>
 
             {/* Botón siguiente */}
-            {/*<TouchableOpacity style={styles.button} onPress={handleNext}>
-                <Text style={styles.startText}>
+            <TouchableOpacity style={styles.button} onPress={handleNext}>
+                <Text style={[styles.startText, { color: slides[currentIndex].buttonColorText }]}>
                     {currentIndex === slides.length - 1 ? "Empezar" : "Siguiente"}
                 </Text>
-            </TouchableOpacity>*/}
+            </TouchableOpacity>
         </Animated.View>
     );
 }
@@ -114,7 +125,8 @@ const styles = StyleSheet.create({
     fastFood: {
         width: wp("80%"),
         height: wp("80%"),
-        top: -hp("3%"),
+        top: -hp("10%"),
+        right: wp("2.6%"),
     },
     title: {
         color: "#fff",
@@ -122,20 +134,20 @@ const styles = StyleSheet.create({
         fontSize: 50,
         fontWeight: "bold",
         position: "absolute",
-        top: hp("67%"),
+        top: hp("59%"),
     },
     frase: {
         color: "#fff",
         fontSize: 18,
         position: "absolute",
-        top: hp("77%"),
+        top: hp("70%"),
         textAlign: "center",
         paddingHorizontal: wp("10%"),
     },
     dotContainer: {
         flexDirection: "row",
         position: "absolute",
-        bottom: hp("12%"),
+        bottom: hp("10%"),
     },
     dot: {
         width: 10,
@@ -146,7 +158,7 @@ const styles = StyleSheet.create({
     },
     button: {
         position: "absolute",
-        bottom: hp(5),
+        bottom: hp("15%"),
         backgroundColor: "#fff",
         paddingVertical: hp(2),
         paddingHorizontal: wp(12),
@@ -154,7 +166,6 @@ const styles = StyleSheet.create({
     },
     startText: {
         fontSize: hp(2.4),
-        color: "#058206",
         fontWeight: "bold",
     },
 });
