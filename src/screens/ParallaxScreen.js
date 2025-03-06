@@ -4,6 +4,7 @@ import {
 } from "react-native";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
 
 const slides = [
     {
@@ -72,6 +73,9 @@ export default function ParallaxScreen() {
                 renderItem={({ item }) => (
                     <View style={styles.slide}>
                         <Image source={require("../../assets/images/background.png")} style={styles.fruitBackground} />
+                        <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate("Home")}>
+                            <Text style={styles.skipText}>Omitir</Text>
+                        </TouchableOpacity>
                         <Image source={item.image} style={styles.fastFood} />
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.frase}>{item.text}</Text>
@@ -102,6 +106,9 @@ export default function ParallaxScreen() {
                     {currentIndex === slides.length - 1 ? "Empezar" : "Siguiente"}
                 </Text>
             </TouchableOpacity>
+
+
+            <StatusBar style="light" />
         </Animated.View>
     );
 }
@@ -167,5 +174,15 @@ const styles = StyleSheet.create({
     startText: {
         fontSize: hp(2.4),
         fontWeight: "bold",
+    },
+    skipButton: {
+        position: "absolute",
+        top: hp("7%"),
+        right: hp("4%"),
+    },
+    skipText: {
+        color: "#fff",
+        fontSize: hp(2),
+        fontWeight: "medium",
     },
 });

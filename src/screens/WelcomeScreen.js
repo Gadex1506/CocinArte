@@ -46,6 +46,8 @@ export default function WelcomeScreen() {
                 </TouchableOpacity>
             </View>
 
+            <StatusBar style='light'/>
+
         </View>
     );
 }
@@ -81,6 +83,7 @@ const styles = StyleSheet.create({
     },
     textSubtitle: {
         fontSize: 20,
+        top: -hp("1%"),
         color: '#fff',
     },
     startText: {
