@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, SatatusBar} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon,
     AdjustmentHorizontalIcon,
@@ -7,7 +7,6 @@ import { MagnifyingGlassIcon,
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
 } from 'react-native-responsive-screen';
-import { StatusBar } from 'expo-status-bar';
 import Categorias from '../components/Categorias';
 import axios from 'axios';
 import Recipes from '../components/Recipes';
@@ -26,10 +25,10 @@ export default function HomeScreen() {
     }, []);
 
     const handleChangeCategory = (category) => {
-        getRecipes(category);
         setActiveCategory(category);
-        setMeals([]);
+        getRecipes(category);
         setSearchText("");
+        setMeals([]);
     };
 
     const getCategories =  async () => {

@@ -8,6 +8,8 @@ import Animated, {FadeInDown} from 'react-native-reanimated';
 import CachedImage from "react-native-expo-cached-image";
 
 export default function Categorias({categories, activeCategory, handleChangeCategory}){
+    
+    
     return (
         <Animated.View entering={FadeInDown.duration(500).springify()}>
             <ScrollView

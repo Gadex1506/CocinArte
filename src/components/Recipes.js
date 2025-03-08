@@ -33,8 +33,8 @@ export default function Recipes({meals, categories}) {
                         //refreshing={isLoadingNext}
                         //onRefresh={() => refetch({first: ITEM_CNT})}
                         onEndReachedThreshold={0.1}
-                        ListFooterComponent={<View style={{height: 50}}/>}
                         //onEndReached={() => loadNext(ITEM_CNT)}
+                        ListFooterComponent={<View style={{ height: 50 }} />}
                     />
                 )
             }
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: "100%",
         height: "100%",
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
         borderRadius: 30,
         overflow: "hidden",
     },
