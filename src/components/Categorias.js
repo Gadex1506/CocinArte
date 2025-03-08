@@ -1,15 +1,67 @@
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { categoryData } from '../constants';
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
 } from 'react-native-responsive-screen';
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import CachedImage from "react-native-expo-cached-image";
+import axios from 'axios';
 
 export default function Categorias({categories, activeCategory, handleChangeCategory}){
     
+    const [translatedCategories, setTranslatedCategories] = useState([]);
     
+    useEffect(() => {
+        translateCategories();
+    } , [categories]); // Se ejecutara cada vez que cambien las categorias
+
+    const translateCategories = async () => {
+        try {
+            const translated = await Promise.all(
+                categories.map(async (category) => {
+                    const translateName = await translateText(category.strCategory);
+                    //console.log(translateName);
+                    return { ...category, translateName };
+                })
+            );
+            setTranslatedCategories(translated);
+        } catch (error) {
+            console.error("Error en la traduccion ", error.message);
+            setTranslatedCategories(categories);
+        }
+    };
+
+    const translateText = async (text, targetLanguage = 'es') => {
+        const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek';
+        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+        
+        try {
+            const { data } = await axios.post(url, {
+                q: text,
+                target: targetLanguage,
+            });
+
+            let translatedText = data.data.translations[0].translatedText;
+
+            // Reemplazo de nombres específicos después de la traducción
+            const replacements = {
+                "Motor de arranque": "Entrada",
+                "Lado": "Acompañamiento",
+                "Misceláneas": "Otros"
+            };
+
+            translatedText = replacements[translatedText] || translatedText;
+
+            //console.log(data.data.translations[0].translatedText);
+            return translatedText;
+
+        } catch (error) {
+            console.error('Error en la traducción ', error);
+            return text;
+        }
+    };
+
     return (
         <Animated.View entering={FadeInDown.duration(500).springify()}>
             <ScrollView
@@ -19,7 +71,7 @@ export default function Categorias({categories, activeCategory, handleChangeCate
                 contentContainerStyle={{ paddingHorizontal: 15 }}
             >
                 {
-                    categories.map((category, index) => {
+                    translatedCategories.map((category, index) => {
                         let isActive = category.strCategory == activeCategory;
                         let activeButtonClass = isActive ? { backgroundColor: '#ff5c2e' } : { backgroundColor: 'rgba(1,1,1,0.1)' };
                         return (
@@ -40,7 +92,7 @@ export default function Categorias({categories, activeCategory, handleChangeCate
                                 </View>
 
                                 {/* Nombre de la categoria respectiva */}
-                                <Text style={styles.categoryName}>{category.strCategory}</Text>
+                                <Text style={styles.categoryName}>{category.translateName || category.strCategory}</Text>
 
                             </TouchableOpacity>
                         );

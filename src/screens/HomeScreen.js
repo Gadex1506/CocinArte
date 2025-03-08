@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar} from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { MagnifyingGlassIcon,
     AdjustmentHorizontalIcon,
     CameraIcon,
@@ -19,6 +19,10 @@ export default function HomeScreen() {
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [searchText, setSearchText] = useState("");
 
+    const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // Reemplaza con tu API Key
+
+    const searchTimeout = useRef(null);
+
     useEffect(() => { 
         getCategories();
         getRecipes();
@@ -26,8 +30,8 @@ export default function HomeScreen() {
 
     const handleChangeCategory = (category) => {
         setActiveCategory(category);
-        getRecipes(category);
         setSearchText("");
+        getRecipes(category);
         setMeals([]);
     };
 
@@ -57,18 +61,63 @@ export default function HomeScreen() {
         }
     };
 
-    const handleSearch = (text) => {
+    const handleSearch = async (text) => {
         setSearchText(text);
-
-        if (text.trim() == "") {
+    
+        if (searchTimeout.current) clearTimeout(searchTimeout.current);
+    
+        // Si el usuario borra todo, restaurar las recetas de la categoría activa de inmediato
+        if (text.trim() === "") {
             setFilteredMeals(meals);
-        }else {
-            const filtered = meals.filter(meals =>
-                meals.strMeal.toLowerCase().includes(text.toLowerCase())
-            );
-            setFilteredMeals(filtered);
+            return;
         }
+    
+        searchTimeout.current = setTimeout(async () => {
+            try {
+                let searchQuery = text.toLowerCase();
+    
+                // Verificar si la palabra ya existe en los nombres de recetas (asumimos que están en inglés)
+                const isEnglish = meals.some(meal => 
+                    meal.strMeal.toLowerCase().includes(searchQuery)
+                );
+    
+                // Si no está en inglés, traducir al inglés antes de buscar
+                if (!isEnglish) {
+                    searchQuery = await translateToEnglish(text);
+                }
+    
+                // Filtrar solo dentro de la categoría activa
+                const filtered = meals.filter(meal =>
+                    meal.strMeal.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+    
+                setFilteredMeals(filtered);
+            } catch (error) {
+                console.log("Error en la búsqueda: ", error.message);
+            }
+        }, 500); // Se ejecutará después de 500ms de inactividad
     };
+    
+    
+    // Función para traducir una palabra al inglés usando LibreTranslate (o Google Translate)
+    const translateToEnglish = async (text) => {
+    try {
+        const response = await axios.post(
+            `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,
+            {
+                q: text,
+                source: "es", // Español
+                target: "en", // Inglés
+                format: "text",
+            }
+        );
+
+        return response.data.data.translations[0].translatedText;
+    } catch (error) {
+        console.log("Error en la traducción:", error);
+        return text; // Si falla la traducción, usa el texto original
+    }
+};
 
     return (
         <View style={styles.container}>
