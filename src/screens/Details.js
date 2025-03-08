@@ -51,7 +51,17 @@ export default function Details(props) {
       {meal && (
         <View style={styles.card}>
           <Text style={styles.title}>{meal.strMeal}</Text>
+
+          
+          <View >
           <CachedImage source={{ uri: meal.strMealThumb }} style={styles.image} />
+            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.atras} >
+                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setLiked(!liked)} style={styles.corazon}>
+                <HeartIcon size={24} color={liked ? "red" : "grey"} />
+            </TouchableOpacity>
+            </View>
             {/*Ingredientes y cantidades*/}
             <Text>
                  
@@ -81,26 +91,19 @@ export default function Details(props) {
             <View style={styles.instructionsContainer}>
                 <Text style={styles.subtitle}>Instrucciones</Text>
                 {meal.strInstructions
-                    .split(".") // Divide por puntos
-                    .filter(line => line.trim() !== "") // Elimina líneas vacías
-                    .map((line, index) => (
-                        <View key={index} style={styles.instructionRow}>
-                            <Text style={styles.stepNumber}>{index + 1}.</Text>
-                            <Text style={styles.instructionText}>{line.trim()}.</Text>
-                        </View>
-                    ))}
+                .split("\n") // Divide por saltos de línea
+                .filter(line => line.trim() !== "") // Elimina líneas vacías
+                .map((line, index) => (
+                    <View key={index} style={styles.instructionRow}>
+                        <Text style={styles.stepNumber}>{index + 1}.</Text>
+                        <Text style={styles.instructionText}>{line.trim()}</Text>
+                    </View>
+                ))}
             </View>
         </View>
       )}
 
-        <View style={styles.icono}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.button} >
-                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setLiked(!liked)} style={styles.button}>
-                <HeartIcon size={24} color={liked ? "red" : "grey"} />
-            </TouchableOpacity>
-        </View>
+
     </ScrollView >
   );
 }
@@ -135,10 +138,27 @@ const styles = StyleSheet.create({
 
 
   },
-  button: {
+  corazon: {
     padding: 10,
     backgroundColor: "white",
-    borderRadius: 90
+    borderRadius: 90,
+    position: "absolute",
+    paddingTop: 10,
+    width: wp("10"),
+    alignItems: "center",
+    left:"85%",
+    top: 10
+  },
+  atras: {
+    padding: 8,
+    backgroundColor: "white",
+    borderRadius: 90,
+    position: "absolute",
+    paddingTop: 5,
+    width: wp("10"),
+    right:"85%",
+    top: 10,
+    alignItems: "center",
   },
   card: {
     width: "100%",
