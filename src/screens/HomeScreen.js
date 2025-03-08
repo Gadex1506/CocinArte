@@ -64,6 +64,7 @@ export default function HomeScreen() {
                     contentContainerStyle={styles.scrollView}
                 >
 
+
                 {/* Bienvenida y Mensaje de Bienvenida*/}
                 <View style={styles.welcomeView}>
                     <Text style={styles.textNickname}>¡Hey, Artista de la Cocina!</Text>
@@ -94,7 +95,7 @@ export default function HomeScreen() {
 
                 {/* Categorias */}
                 <View style={styles.categoriesView}>
-                    { categories.length > 0 && <Categorias categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory}/> }
+                    <Categorias categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory}/>
                 </View>
 
                 {/* Lista de Recetas */}

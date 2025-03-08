@@ -9,9 +9,11 @@ import Animated, {FadeInDown} from 'react-native-reanimated';
 import Loading from "./Loading";
 //import { CachedImage } from "../helpers/image";
 import CachedImage from "react-native-expo-cached-image";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Recipes({meals, categories}) {
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <Text style={styles.recetasTxt}>Recetas</Text>
@@ -27,7 +29,7 @@ export default function Recipes({meals, categories}) {
                         keyExtractor={(item) => item.idMeal}
                         numColumns={2}
                         showsVerticalScrollIndicator={false}
-                        renderItem={({item, i}) => <RecipeCard item={item} index={i} />}
+                        renderItem={({item, i}) => <RecipeCard item={item} index={i} navigation={navigation} />}
                         //refreshing={isLoadingNext}
                         //onRefresh={() => refetch({first: ITEM_CNT})}
                         onEndReachedThreshold={0.1}
@@ -41,15 +43,15 @@ export default function Recipes({meals, categories}) {
     )
 }
 
-const RecipeCard = ({item, index}) => {
+const RecipeCard = ({item, index, navigation}) => {
 
     let isEven = index%2 == 0;
 
     return (
         <Animated.View entering={FadeInDown.delay(index*100).duration(600).springify().damping(12)}>
-            <Pressable style={[styles.pressableCard, {paddingLeft: isEven? 0:8, paddingRight: isEven? 8:0}]} >
+            <Pressable style={[styles.pressableCard, {paddingLeft: isEven? 0:8, paddingRight: isEven? 8:0}]} onPress = {()=>navigation.navigate('Details', {...item})} >
                 {/*<Image source={{uri: item.strMealThumb}} style={[styles.imageCard, { height: index%3==0? hp(25): hp(35) }]} />*/}
-
+                
                 {/* Imagen de la receta */}
                 <CachedImage
                     source={{ uri: item.strMealThumb }}
