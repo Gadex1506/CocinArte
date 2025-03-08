@@ -33,6 +33,7 @@ export default function Recipes({meals, categories}) {
                         //refreshing={isLoadingNext}
                         //onRefresh={() => refetch({first: ITEM_CNT})}
                         onEndReachedThreshold={0.1}
+                        ListFooterComponent={<View style={{height: 50}}/>}
                         //onEndReached={() => loadNext(ITEM_CNT)}
                     />
                 )

@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, SatatusBar} from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { MagnifyingGlassIcon,
     AdjustmentHorizontalIcon,
@@ -17,6 +17,8 @@ export default function HomeScreen() {
     const [activeCategory, setActiveCategory] = useState("Beef");
     const [categories, setCategories] = useState([]);
     const [meals, setMeals] = useState([]);
+    const [filteredMeals, setFilteredMeals] = useState([]);
+    const [searchText, setSearchText] = useState("");
 
     useEffect(() => { 
         getCategories();
@@ -27,6 +29,7 @@ export default function HomeScreen() {
         getRecipes(category);
         setActiveCategory(category);
         setMeals([]);
+        setSearchText("");
     };
 
     const getCategories =  async () => {
@@ -48,9 +51,23 @@ export default function HomeScreen() {
             //console.log('Obteniendo Recetas', response.data);
             if(response && response.data){
                 setMeals(response.data.meals);
+                setFilteredMeals(response.data.meals);
             }
         } catch (error) {
             console.log('error: ', error.message);
+        }
+    };
+
+    const handleSearch = (text) => {
+        setSearchText(text);
+
+        if (text.trim() == "") {
+            setFilteredMeals(meals);
+        }else {
+            const filtered = meals.filter(meals =>
+                meals.strMeal.toLowerCase().includes(text.toLowerCase())
+            );
+            setFilteredMeals(filtered);
         }
     };
 
@@ -85,6 +102,8 @@ export default function HomeScreen() {
                         placeholder='Buscar recetas...'
                         placeholderTextColor={"#202020"}
                         style={styles.textInputStyle}
+                        value={searchText}
+                        onChangeText={handleSearch}
                     />
 
                     {/* Icono de la Camara */}
@@ -100,7 +119,7 @@ export default function HomeScreen() {
 
                 {/* Lista de Recetas */}
                 <View style={styles.recipesView}>
-                    <Recipes meals={meals} categories={categories}/>
+                    <Recipes meals={filteredMeals} categories={categories}/>
                 </View>
 
                 </ScrollView>
