@@ -64,7 +64,7 @@ export default function Details(props) {
             </View>
             {/*Ingredientes y cantidades*/}
             <Text>
-                 
+              
             </Text>
 
             <View style={styles.tableContainer}>
