@@ -95,7 +95,7 @@ export default function Details(props) {
     const translateInstructions = async (instructions) => {
       const translatedText = await translateText(instructions);
 
-      const instruccionesArray = translatedText.split(".").filter(line => line.trim() !== "");
+      const instruccionesArray = translatedText.split(". ").filter(line => line.trim() !== "");
       //console.log(instruccionesArray);
 
       setTranslatedInstructions(instruccionesArray);
