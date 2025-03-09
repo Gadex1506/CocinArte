@@ -57,6 +57,7 @@ const RecipeCard = ({item, index, navigation}) => {
                 <CachedImage
                     source={{ uri: item.strMealThumb }}
                     style={[styles.imageCard, { height: index%3==0? hp(25): hp(35) }]}
+                    sharedTransitionTag={item.strMeal}
                 />
                 
                 {/* Capa oscura encima de la imagen */}

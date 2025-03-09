@@ -10,6 +10,7 @@ import { widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import { FlashList } from "@shopify/flash-list";
 import { WebView } from 'react-native-webview';
+import YoutubeIframe from 'react-native-youtube-iframe';
 
 export default function Details(props) {
 
@@ -100,6 +101,14 @@ export default function Details(props) {
       setTranslatedInstructions(instruccionesArray);
     };
 
+    //Metodo para cargar video de la receta
+    const getYoutubeVideoId = (url) => {
+      const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+      const match = url.match(regex);
+      return match ? match[1] : null;
+    };
+    
+
   return (
 
     <ScrollView  contentContainerStyle={styles.container}>
@@ -108,7 +117,7 @@ export default function Details(props) {
           <Text style={styles.title}>{meal.strMeal}</Text>
 
           <View >
-          <CachedImage source={{ uri: meal.strMealThumb }} style={styles.image} />
+          <CachedImage source={{ uri: meal.strMealThumb }} sharedTransitionTag={meal.strMeal} style={styles.image} />
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.atras} >
                 <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
             </TouchableOpacity>
@@ -162,13 +171,20 @@ export default function Details(props) {
             </View>
 
             {/* Video de la Receta */}
-            <View style={{ height: 200, marginTop:20 }}>
-                <Text style={styles.subtitle}>Tutorial</Text>
-                <WebView
-                  source={{ uri: meal.strYoutube }}
-                  style={{ flex: 1 }}
-                />
-            </View>
+            {
+              meal.strYoutube && (
+                <View style={{ marginTop: 10 }}>
+                  <Text style={styles.subtitle}>Video Tutorial</Text>
+                  <View>
+                    <YoutubeIframe
+                      videoId={getYoutubeVideoId(meal.strYoutube)}
+                      //videoId='jCjSIhsOn2iNzf6t'
+                      height={ hp(25) }
+                    />
+                  </View>
+                </View>
+              )
+            }
 
         </View>
       )}
