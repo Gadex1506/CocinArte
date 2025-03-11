@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@expo-google-fonts/nunito": "^0.2.3",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-seoul/masonry-list": "^1.4.2",
     "@react-navigation/native": "^7.0.15",
@@ -16,7 +17,9 @@
     "@shopify/flash-list": "^1.7.3",
     "axios": "^1.8.1",
     "expo": "~52.0.37",
+    "expo-app-loading": "^2.1.1",
     "expo-camera": "^16.0.17",
+    "expo-font": "^13.0.4",
     "expo-image-picker": "^16.0.6",
     "expo-router": "~4.0.17",
     "expo-status-bar": "~2.0.1",

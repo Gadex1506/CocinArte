@@ -7,11 +7,21 @@ import { widthPercentageToDP as wp,
 import Animated, {FadeInDown} from 'react-native-reanimated';
 import CachedImage from "react-native-expo-cached-image";
 import axios from 'axios';
+import { useFonts } from 'expo-font';
 
 export default function Categorias({categories, activeCategory, handleChangeCategory}){
     
     const [translatedCategories, setTranslatedCategories] = useState([]);
     
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
+
     useEffect(() => {
         translateCategories();
     } , [categories]); // Se ejecutara cada vez que cambien las categorias
@@ -124,5 +134,6 @@ const styles = StyleSheet.create({
     categoryName:{
         color: '#fff',
         fontSize: hp(1.6),
+        fontFamily: 'Nunito-Medium',
     },
 });

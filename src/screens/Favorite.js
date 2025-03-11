@@ -4,10 +4,20 @@ import { useFavorites } from "../context/FavoriteContext";
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useFonts } from 'expo-font';
 
 export default function FavoritesScreen() {
     const { favorites, removeFavorite } = useFavorites();
     const navigation = useNavigation();
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
 
     return (
         <View style={styles.container}>
@@ -45,15 +55,63 @@ export default function FavoritesScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#202020", padding: 20 },
-    title: { fontSize: 24, fontWeight: "bold", color: "white", textAlign: "center", marginBottom: 20, top: 50 },
-    noFavorites: { color: "gray", textAlign: "center", marginTop: 20, fontSize: 18, top: 50 },
-    recipeCard: { flexDirection: "row", backgroundColor: "#303030", borderRadius: 10, marginBottom: 15, overflow: "hidden", top: 50 },
-    image: { width: 100, height: 100 },
-    infoContainer: { flex: 1, padding: 10, justifyContent: "space-between" },
-    recipeName: { color: "white", fontSize: 16, fontWeight: "bold" },
-    buttons: { flexDirection: "row", justifyContent: "space-between" },
-    detailButton: { backgroundColor: "#ff5c2e", padding: 8, borderRadius: 5 },
-    removeButton: { backgroundColor: "red", padding: 8, borderRadius: 5 },
-    buttonText: { color: "white", fontWeight: "bold" },
+    container: { 
+        flex: 1, 
+        backgroundColor: "#202020", 
+        padding: 20 
+    },
+    title: { 
+        fontSize: 24, 
+        fontFamily: "Nunito-ExtraBold", 
+        color: "white", 
+        textAlign: "center", 
+        marginBottom: 20, 
+        top: 50 },
+    noFavorites: { 
+        color: "gray", 
+        textAlign: "center", 
+        marginTop: 20, 
+        fontSize: 18, 
+        top: 50,
+        fontFamily: "Nunito-Semibold",
+    },
+    recipeCard: { 
+        flexDirection: "row", 
+        backgroundColor: "#303030", 
+        borderRadius: 10, 
+        marginBottom: 15, 
+        overflow: "hidden", 
+        top: 50 },
+    image: { 
+        width: 100, 
+        height: 100 
+    },
+    infoContainer: { 
+        flex: 1, 
+        padding: 10, 
+        justifyContent: "space-between", 
+    },
+    recipeName: { 
+        color: "white", 
+        fontSize: 16, 
+        fontFamily: "Nunito-ExtraBold", 
+    },
+    buttons: { 
+        flexDirection: "row", 
+        justifyContent: "space-between" 
+    },
+    detailButton: { 
+        backgroundColor: "#ff5c2e", 
+        padding: 8, 
+        borderRadius: 5 
+    },
+    removeButton: { 
+        backgroundColor: "red", 
+        padding: 8, 
+        borderRadius: 5 
+    },
+    buttonText: { 
+        color: "white", 
+        fontFamily: "Nunito-Bold",
+    },
 });

@@ -5,6 +5,7 @@ import {
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
+import { useFonts } from 'expo-font';
 
 const slides = [
     {
@@ -20,8 +21,8 @@ const slides = [
         title: "Descubre",
         text: "Prueba recetas nuevas y mejora tus habilidades culinarias cada día.",
         image: require("../../assets/images/FastFood.webp"),
-        backgroundColor: "#ff5a2f",
-        buttonColorText: "#ff5a2f"
+        backgroundColor: "#d22b35",
+        buttonColorText: "#d22b35"
     },
     {
         id: "3",
@@ -35,10 +36,20 @@ const slides = [
 
 
 export default function ParallaxScreen() {
+
     const navigation = useNavigation();
     const scrollX = useRef(new Animated.Value(0)).current;
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef(null);
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
 
     const backgroundColor = scrollX.interpolate({
         inputRange: slides.map((_, i) => i * wp("100%")),
@@ -137,9 +148,8 @@ const styles = StyleSheet.create({
     },
     title: {
         color: "#fff",
-        fontFamily: "serif",
-        fontSize: 50,
-        fontWeight: "bold",
+        fontFamily: "Nunito-ExtraBold",
+        fontSize: 60,
         position: "absolute",
         top: hp("59%"),
     },
@@ -150,6 +160,7 @@ const styles = StyleSheet.create({
         top: hp("70%"),
         textAlign: "center",
         paddingHorizontal: wp("10%"),
+        fontFamily: "Nunito-Semibold",
     },
     dotContainer: {
         flexDirection: "row",
@@ -173,7 +184,7 @@ const styles = StyleSheet.create({
     },
     startText: {
         fontSize: hp(2.4),
-        fontWeight: "bold",
+        fontFamily: "Nunito-ExtraBold",
     },
     skipButton: {
         position: "absolute",
@@ -183,6 +194,6 @@ const styles = StyleSheet.create({
     skipText: {
         color: "#fff",
         fontSize: hp(2),
-        fontWeight: "medium",
+        fontFamily: "Nunito-Medium",
     },
 });

@@ -9,11 +9,20 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { FlashList } from "@shopify/flash-list";
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useFavorites } from "../context/FavoriteContext";
-
+import { useFonts } from 'expo-font';
 
 export default function Details(props) {
 
     let item = props.route.params;
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+      'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+      'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+      'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+      'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+      'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
 
     const [meal, setMeal] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -120,8 +129,6 @@ export default function Details(props) {
       return match ? match[1] : null;
     };
 
-
-    
 
   return (
 
@@ -271,12 +278,10 @@ const styles = StyleSheet.create({
     marginBottom: 50,
 
     top: 20,
-
-
   },
   title: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontFamily: "Nunito-ExtraBold",
     textAlign: "center",
     marginBottom: 10,
     color: "white"
@@ -290,6 +295,7 @@ const styles = StyleSheet.create({
   instructions: {
     fontSize: 16,
     textAlign: "justify",
+    fontFamily: "Nunito-Medium",
   },
   fetchButton: {
     backgroundColor: "#007bff",
@@ -302,6 +308,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
     fontWeight: "bold",
+    fontFamily: "Nunito-Medium",
   },
   tableContainer: {
     width: '100%',
@@ -321,9 +328,9 @@ const styles = StyleSheet.create({
   headerText: {
     flex: 1,
     textAlign: 'center',
-    fontWeight: 'bold',
     fontSize: 16,
-    color: '#ff5c2e'
+    color: '#ff5c2e',
+    fontFamily: "Nunito-Bold",
   },
   row: {
     flexDirection: 'row',
@@ -336,8 +343,8 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 14,
-    color:"grey"
-
+    color:"grey",
+    fontFamily: "Nunito-Semibold",
   },
   instructionsContainer: {
     marginTop: 20,
@@ -345,9 +352,9 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: "bold",
     marginBottom: 10,
     color: "#ff5c2e",
+    fontFamily: "Nunito-Bold",
   },
   instructionRow: {
     flexDirection: "row",
@@ -355,10 +362,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   stepNumber: {
-    fontWeight: "bold",
     marginRight: 6,
     fontSize: 16,
     color: "#ff5c2e",
+    fontFamily: "Nunito-Bold",
   },
   instructionsText: {
     fontSize: 16,
@@ -366,6 +373,7 @@ const styles = StyleSheet.create({
     color: "#fff",
     marginBottom: 16, // Agrega espacio entre líneas
     lineHeight: 24, // Ajusta la altura de línea
+    fontFamily: "Nunito-Regular",
   },
   instructionTranslate: {
     flexDirection: "row", 

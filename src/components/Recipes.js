@@ -10,10 +10,21 @@ import Loading from "./Loading";
 //import { CachedImage } from "../helpers/image";
 import CachedImage from "react-native-expo-cached-image";
 import { useNavigation } from "@react-navigation/native";
+import { useFonts } from 'expo-font';
 
 
 export default function Recipes({meals, categories}) {
     const navigation = useNavigation();
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
+
     return (
         <View style={styles.container}>
             <Text style={styles.recetasTxt}>Recetas</Text>
@@ -85,7 +96,7 @@ const styles = StyleSheet.create({
     },
     recetasTxt: {
         fontSize: hp(3),
-        fontWeight: "semibold",
+        fontFamily: "Nunito-Bold",
         color: "#fff",
         marginBottom: 20,
     },
@@ -111,10 +122,10 @@ const styles = StyleSheet.create({
         overflow: "hidden",
     },
     recipeName: {
-        fontWeight: "bold",
         color: "#fff", //ff5c2e
         fontSize: hp(2.4),
         textAlign: "auto",
+        fontFamily: "Nunito-ExtraBold",
     },
     LoadingStyle: {
         width: 50,

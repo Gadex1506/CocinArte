@@ -8,8 +8,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import Animated from 'react-native-reanimated';
 import { useNavigation } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 
 export default function WelcomeScreen() {
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
 
     const animation = new useRef(null);
     const navigation = useNavigation();
@@ -77,19 +87,20 @@ const styles = StyleSheet.create({
     },
     textTitle: {
         fontSize: 55,
-        fontWeight: 'bold',
+        fontFamily: 'Nunito-ExtraBold',
         color: '#fff',
         marginBottom: 10,
     },
     textSubtitle: {
         fontSize: 20,
+        fontFamily: 'Nunito-SemiBold',
         top: -hp("1%"),
         color: '#fff',
     },
     startText: {
         fontSize: 20,
         color: '#ff5c2e',
-        fontWeight: 'bold',
+        fontFamily: 'Nunito-ExtraBold',
     },
     button: {
         bottom: wp(30),

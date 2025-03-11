@@ -9,6 +9,7 @@ import Categorias from '../components/Categorias';
 import axios from 'axios';
 import Recipes from '../components/Recipes';
 import { useNavigation } from "@react-navigation/native";
+import { useFonts } from 'expo-font';
 
 export default function HomeScreen() {
 
@@ -22,6 +23,15 @@ export default function HomeScreen() {
     const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // Reemplaza con tu API Key
 
     const searchTimeout = useRef(null);
+
+    {/* Exportacion de fuente Nunito */}
+    const [fontsLoaded] = useFonts({
+        'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+        'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+        'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+        'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+        'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+    });
 
     useEffect(() => { 
         getCategories();
@@ -201,16 +211,17 @@ const styles = StyleSheet.create({
     textNickname: {
         color: "#fff",
         fontSize: hp(2.5),
+        fontFamily: "Nunito-Regular",
     },
     motivationTxt: {
         color: "#fff",
-        fontWeight: "semibold",
+        fontFamily: "Nunito-Semibold",
         fontSize: hp(3.8),
         marginTop: 10,
     },
     threeTxt: {
         color: "#ff5c2e",
-        fontWeight: "semibold",
+        fontFamily: "Nunito-Semibold",
         fontSize: hp(3.8),
         marginTop: 5,
     },
@@ -235,6 +246,7 @@ const styles = StyleSheet.create({
         margin: 1,
         left: hp(1),
         letterSpacing: 0.5,
+        fontFamily: "Nunito-Medium",
     },
     cameraIcon: {
         borderRadius: 10,
