@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, FlatList, VirtualizedList } from "react-native";
-import { ChevronLeftIcon, CameraIcon } from "react-native-heroicons/outline";
+import { View, Text,  ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { HeartIcon } from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 import CachedImage from "react-native-expo-cached-image";
-import { widthPercentageToDP as wp, 
-    heightPercentageToDP as hp 
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { FlashList } from "@shopify/flash-list";
-import { WebView } from 'react-native-webview';
 import YoutubeIframe from 'react-native-youtube-iframe';
+import { useFavorites } from "../context/FavoriteContext";
+
 
 export default function Details(props) {
 
@@ -20,6 +19,10 @@ export default function Details(props) {
     const [loading, setLoading] = useState(true);
     const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
+    const { favorites, addFavorite, removeFavorite } = useFavorites(); // Obtener funciones del contexto
+
+    // Verificar si la receta ya está en favoritos
+    const isLiked = favorites.some((fav) => fav.idMeal === item.idMeal);
 
     // Funciones para la traduccion
     const [translatedIngredients, setTranslatedIngredients] = useState([]);
@@ -40,6 +43,15 @@ export default function Details(props) {
     useEffect(() => {
       getMealData(item.idMeal);
     }, []);
+
+        // Definicion del headlelike`
+        const handleLike = () => {
+          if (isLiked) {
+              removeFavorite(item.idMeal);
+          } else {
+              addFavorite(meal);
+          }
+      };
 
     const getMealData =  async (id = item.idMeal) => {
       try {
@@ -107,6 +119,8 @@ export default function Details(props) {
       const match = url.match(regex);
       return match ? match[1] : null;
     };
+
+
     
 
   return (
@@ -121,8 +135,8 @@ export default function Details(props) {
             <TouchableOpacity onPress={() => navigation.goBack()} style={styles.atras} >
                 <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => setLiked(!liked)} style={styles.corazon}>
-                <HeartIcon size={24} color={liked ? "red" : "grey"} />
+            <TouchableOpacity  onPress={handleLike} style={styles.corazon}>
+                <HeartIcon size={24} color={isLiked ? "red" : "grey"} />
             </TouchableOpacity>
             </View>
             {/*Ingredientes y cantidades*/}

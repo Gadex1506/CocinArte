@@ -1,17 +1,14 @@
-import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar} from 'react-native';
-import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { MagnifyingGlassIcon,
-    AdjustmentHorizontalIcon,
-    CameraIcon,
-} from 'react-native-heroicons/outline';
+import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar, TouchableOpacity} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { MagnifyingGlassIcon, CameraIcon} from 'react-native-heroicons/outline';
+import { HeartIcon} from 'react-native-heroicons/solid';
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
 } from 'react-native-responsive-screen';
 import Categorias from '../components/Categorias';
 import axios from 'axios';
 import Recipes from '../components/Recipes';
-import { useNavigation } from '@react-navigation/native';
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeScreen() {
 
@@ -136,6 +133,10 @@ export default function HomeScreen() {
                 {/* Bienvenida y Mensaje de Bienvenida*/}
                 <View style={styles.welcomeView}>
                     <Text style={styles.textNickname}>¡Hey, Artista de la Cocina!</Text>
+                    {/* Botón de Corazón */}
+                    <TouchableOpacity style={styles.heartButton}>
+                        <HeartIcon onPress={()=>navigation.navigate('Favorite')} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
+                    </TouchableOpacity>
                     <View>
                         <Text style={styles.motivationTxt}>La cocina es arte, y tú eres el artista. <Text style={styles.threeTxt}>¡Dale tu toque especial!</Text></Text>
                     </View>
@@ -159,7 +160,7 @@ export default function HomeScreen() {
 
                     {/* Icono de la Camara */}
                     <View style={styles.cameraIcon}>
-                        <CameraIcon onPress = {()=>navigation.navigate('Vision')} size={hp(2.8)} strokeWidth={2} color={"#ff5c2e"} />
+                        <CameraIcon onPress = {()=>navigation.navigate('Vision')}  size={hp(2.8)} strokeWidth={2} color={"#ff5c2e"} />
                     </View>
                 </View>
 
@@ -245,5 +246,20 @@ const styles = StyleSheet.create({
     },
     recipesView: {
         top: 100,
+    },
+    heartButton: {
+        width: hp(5),
+        height: hp(5),
+        backgroundColor: "#fff",
+        borderRadius: hp(2.5),
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 3,
+        position: 'absolute',
+        right: (10)
     },
 });
