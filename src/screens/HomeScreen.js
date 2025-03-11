@@ -10,6 +10,8 @@ import { widthPercentageToDP as wp,
 import Categorias from '../components/Categorias';
 import axios from 'axios';
 import Recipes from '../components/Recipes';
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function HomeScreen() {
 
@@ -18,6 +20,7 @@ export default function HomeScreen() {
     const [meals, setMeals] = useState([]);
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const navigation = useNavigation();
 
     const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // Reemplaza con tu API Key
 
@@ -156,7 +159,7 @@ export default function HomeScreen() {
 
                     {/* Icono de la Camara */}
                     <View style={styles.cameraIcon}>
-                        <CameraIcon size={hp(2.8)} strokeWidth={2} color={"#ff5c2e"} />
+                        <CameraIcon onPress = {()=>navigation.navigate('Vision')} size={hp(2.8)} strokeWidth={2} color={"#ff5c2e"} />
                     </View>
                 </View>
 

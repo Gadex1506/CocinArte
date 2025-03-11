@@ -8,6 +8,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ParallaxScreen from '../screens/ParallaxScreen';
 import Details from '../screens/Details';
+import Vision from '../screens/Vision';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ export default function AppNavigation() {
                 <Stack.Screen name="Parallax" component={ParallaxScreen} />
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Details" component={Details} />
+                <Stack.Screen name="Vision" component={Vision} />
             </Stack.Navigator>
         </NavigationContainer>
     );
