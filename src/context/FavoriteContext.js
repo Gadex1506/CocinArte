@@ -1,21 +1,48 @@
-import React, { createContext, useState, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FavoritesContext = createContext();
 
 export const FavoritesProvider = ({ children }) => {
-    const [favorites, setFavorites] = useState([]); // Estado global de favoritos
+    const [favorites, setFavorites] = useState([]);
 
-    // Agregar receta a favoritos
+    useEffect(() => {
+        loadFavorites();
+    }, []);
+
+    const loadFavorites = async () => {
+        try {
+            const storedFavorites = await AsyncStorage.getItem("favorites");
+            if (storedFavorites) {
+                setFavorites(JSON.parse(storedFavorites));
+            }
+        } catch (error) {
+            console.log("Error al cargar favoritos", error);
+        }
+    };
+
+    const saveFavorites = async (newFavorites) => {
+        try {
+            await AsyncStorage.setItem("favorites", JSON.stringify(newFavorites));
+        } catch (error) {
+            console.log("Error al guardar favoritos", error);
+        }
+    };
+
     const addFavorite = (meal) => {
         setFavorites((prev) => {
-            const exists = prev.some((fav) => fav.idMeal === meal.idMeal);
-            return exists ? prev : [...prev, meal];
+            const updatedFavorites = [...prev, meal];
+            saveFavorites(updatedFavorites);
+            return updatedFavorites;
         });
     };
 
-    // Eliminar receta de favoritos
     const removeFavorite = (mealId) => {
-        setFavorites((prev) => prev.filter((fav) => fav.idMeal !== mealId));
+        setFavorites((prev) => {
+            const updatedFavorites = prev.filter((fav) => fav.idMeal !== mealId);
+            saveFavorites(updatedFavorites);
+            return updatedFavorites;
+        });
     };
 
     return (
@@ -25,5 +52,4 @@ export const FavoritesProvider = ({ children }) => {
     );
 };
 
-// Hook para acceder al contexto
 export const useFavorites = () => useContext(FavoritesContext);
