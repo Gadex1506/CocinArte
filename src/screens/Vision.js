@@ -78,7 +78,7 @@ export default function ObjectDetection() {
 
     // Enviar la imagen a Google Cloud Vision
     const analyzeImage = async (base64Image) => {
-        const API_KEY = 'AIzaSyDYLIaALM-jXH-LXu7JhrbTV0sVSnqigGI'; // Reemplázalo con tu API KEY
+        const API_KEY = 'AIzaSyDYLIaALM-jXH-LXu7JhrbTV0sVSnqigGI'; // API de Google Cloud Vision
 
         try {
             const response = await axios.post(

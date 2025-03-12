@@ -31,7 +31,7 @@ export default function Details(props) {
     const { favorites, addFavorite, removeFavorite } = useFavorites(); // Obtener funciones del contexto
 
     // Verificar si la receta ya está en favoritos
-    const isLiked = favorites.some((fav) => fav.idMeal === item.idMeal);
+    const noLike = favorites.some((fav) => fav.idMeal === item.idMeal);
 
     // Funciones para la traduccion
     const [translatedIngredients, setTranslatedIngredients] = useState([]);
@@ -55,7 +55,7 @@ export default function Details(props) {
 
         // Definicion del headlelike`
         const handleLike = () => {
-          if (isLiked) {
+          if (noLike) {
               removeFavorite(item.idMeal);
           } else {
               addFavorite(meal);
@@ -81,7 +81,7 @@ export default function Details(props) {
     //Metodo para consumir la API de google Translate
     const translateText = async (text) => {
 
-      const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek';
+      const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // API de Google Translate
       const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
 
       try {
@@ -143,7 +143,7 @@ export default function Details(props) {
                 <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
             </TouchableOpacity>
             <TouchableOpacity  onPress={handleLike} style={styles.corazon}>
-                <HeartIcon size={24} color={isLiked ? "red" : "grey"} />
+                <HeartIcon size={24} color={noLike ? "red" : "grey"} />
             </TouchableOpacity>
             </View>
             {/*Ingredientes y cantidades*/}
