@@ -20,7 +20,7 @@ export default function HomeScreen() {
     const [searchText, setSearchText] = useState("");
     const navigation = useNavigation();
 
-    const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // Reemplaza con tu API Key
+    const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // API de Google Translate
 
     const searchTimeout = useRef(null);
 
@@ -54,7 +54,7 @@ export default function HomeScreen() {
                 //console.log('Obteniendo Categorias', response.data);
             }
         } catch (error) {
-            console.log('error: ', error.message);
+            console.log('No hay datos para asignar: ', error.message);
         }
     };
 
@@ -67,7 +67,7 @@ export default function HomeScreen() {
                 setFilteredMeals(response.data.meals);
             }
         } catch (error) {
-            console.log('error: ', error.message);
+            console.log('No hay datos para asignar: ', error.message);
         }
     };
 

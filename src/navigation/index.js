@@ -12,8 +12,6 @@ import Vision from '../screens/Vision';
 import Favorite from '../screens/Favorite';
 import { FavoritesProvider } from '../context/FavoriteContext';
 
-
-
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigation() {

@@ -115,7 +115,7 @@ export default function ObjectDetection() {
                 <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
             </TouchableOpacity>
 
-            {/* Lottie Imagen de Comida Caminando */}
+            {/* Lottie Imagen de Comida Pasando */}
             {!isProcessing && textDetected == '' && (
                 <>
                     <View>
