@@ -3,20 +3,23 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, getDocs, doc, addDoc, deleteDoc, setDoc } from "firebase/firestore";
 
+//Credenciales a Firebase
+import app from '../components/FirebaseConfig';
+
 const FavoritesContext = createContext();
 
 // Configuraciones de Firebase
-const firebaseConfig = {
+/*const firebaseConfig = {
     apiKey: "AIzaSyAqGrjVKqgkJWYg40zSUD2UzIdlaKMN1uY",
     authDomain: "cocinarte-afd3c.firebaseapp.com",
     projectId: "cocinarte-afd3c",
     storageBucket: "cocinarte-afd3c.firebasestorage.app",
     messagingSenderId: "784701390883",
     appId: "1:784701390883:web:d504d7a70abc2d5ab13196"
-};
+};*/
 
 // Inicializar Firebase
-const app = initializeApp(firebaseConfig);
+//const app = initializeApp(firebaseConfig);
 const database = getFirestore(app);
 
 export const FavoritesProvider = ({ children }) => {

@@ -5,11 +5,21 @@ import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
 } from 'react-native-responsive-screen';
+import { useFonts } from 'expo-font';
 
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
+
+  {/* Exportacion de fuente Nunito */}
+      const [fontsLoaded] = useFonts({
+          'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
+          'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
+          'Nunito-SemiBold': require('@expo-google-fonts/nunito/Nunito_600SemiBold.ttf'),
+          'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
+          'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
+  });
 
   // Validación de email
   const validateEmail = (email) => {
@@ -61,7 +71,8 @@ export default function ForgotPasswordScreen({ navigation }) {
         
         <TextInput
             style={[styles.input, emailError ? styles.inputError : null]}
-            placeholder="Email"
+            placeholder="Correo Electrónico..."
+            placeholderTextColor={"#20202099"}
             value={email}
             onChangeText={(text) => {
             setEmail(text);
@@ -102,33 +113,36 @@ const styles = StyleSheet.create({
     backgroundColor: '#d22b35',
   },
   fruitBackground: {
-          position: 'absolute',
-          width: wp(100),
-          height: hp(100),
-      },
+    position: 'absolute',
+    width: wp(100),
+    height: hp(100),
+  },
   innerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: 24,
-      },
+    flex: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontFamily: "Nunito-ExtraBold",
     marginBottom: 12,
     textAlign: 'center',
     color: '#fff',
   },
   subtitle: {
     fontSize: 14,
+    fontFamily: "Nunito-SemiBold",
     textAlign: 'center',
     marginBottom: 24,
     color: '#fff',
   },
   input: {
+    fontFamily: "Nunito-SemiBold",
+    color: '#d22b35',
     height: 50,
     borderColor: '#d1d5db',
     borderWidth: 1,
-    marginBottom: 12,
+    marginBottom: 22,
     paddingHorizontal: 12,
     borderRadius: 8,
     backgroundColor: 'white',
@@ -137,8 +151,9 @@ const styles = StyleSheet.create({
     borderColor: '#ef4444',
   },
   errorText: {
-    color: '#ef4444',
-    marginBottom: 8,
+    fontFamily: "Nunito-SemiBold",
+    color: '#fff',
+    marginBottom: 20,
     fontSize: 12,
     marginLeft: 4,
   },
@@ -154,15 +169,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFB0A5',
   },
   buttonText: {
+    fontFamily: "Nunito-Bold",
     color: '#FF1C0F',
     textAlign: 'center',
     fontSize: 16,
-    fontWeight: '600',
   },
   linkText: {
-    color: '#FFBAB9',
+    fontFamily: "Nunito-SemiBold",
+    color: '#ffffffbb',
     textAlign: 'center',
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 14,
   },
 });

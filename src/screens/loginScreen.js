@@ -62,7 +62,7 @@ export default function Login() {
         if (!password) {
         setPasswordError('La contraseña es obligatoria');
         return false;
-        } else if (password.length < 12) {
+        } else if (password.length < 6) {
         setPasswordError('La contraseña debe tener al menos 12 caracteres');
         return false;
         }
@@ -89,7 +89,7 @@ export default function Login() {
         .then((userCredentials) => {
             // Usuario registrado
             const user = userCredentials.user;
-            navigation.replace('Parallax'); // Continuar a la siguiente ventana despues de haber validado el usuario
+            navigation.replace('Welcome'); // Continuar a la siguiente ventana despues de haber validado el usuario
         })
         .catch((error) => {
             // Traduccion de errores mas comunes de Firebase para mejorar la experiencia de usuario
@@ -103,6 +103,9 @@ export default function Login() {
                     break;
                 case 'auth/too-many-requests':
                     errorMessage = 'Demasiados intentos fallidos. Inténtalo más tarde';
+                case 'auth/invalid-credential':
+                    errorMessage = 'Correo o contraseña incorrecta';
+                    break;
                 default:
                     errorMessage = error.message;
                     break;
@@ -206,31 +209,17 @@ export default function Login() {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.signupContainer} onPress={() => navigation.navigate('ForgotPasswordScreen')}>
-                        <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+                        <Text style={[styles.forgotText, { color: '#ff5c2e', fontFamily: "Nunito-SemiBold" }]}>¿Olvidaste tu contraseña?</Text>
                     </TouchableOpacity>
         
                     <View style={styles.signupContainer}>
-                        <Text style={styles.signupText}>¿No tienes cuenta? </Text>
+                        <Text style={[styles.signupText, {color: "#ffffffcc", fontFamily: "Nunito-SemiBold"}]}>¿No tienes cuenta? </Text>
                         <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
-                            <Text style={styles.signupLink}>Regístrate</Text>
+                            <Text style={[styles.signupLink, { color: "#ff5c2e", fontFamily: "Nunito-Bold" }]}>Regístrate</Text>
                         </TouchableOpacity>
                     </View>
 
                 </View>
-
-                {/* Boton de Iniciar Sesion */}
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                    disabled={isLoading}
-                >
-                    {isLoading ? (
-                            <ActivityIndicator color="white"/>
-                        ) : (
-                            <Text style={styles.buttonText}>Iniciar Sesión</Text>
-                        )
-                    }
-                </TouchableOpacity>
 
                 </ScrollView>
 
@@ -302,7 +291,7 @@ const styles = StyleSheet.create({
         height: hp("6.6%"),
         width: wp("90%"),
         marginBottom: hp("4%"),
-        top: hp("38%"),
+        top: hp("40%"),
     },
     button: {
         backgroundColor: '#FFE38F',
@@ -310,39 +299,33 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         top: hp("38%"),
         marginHorizontal: 100,
-
-      },
-      buttonDisabled: {
+    },
+        buttonDisabled: {
         backgroundColor: '#FFE38F',
-      },
-      buttonText: {
+    },
+    buttonText: {
+        fontFamily: "Nunito-Bold",
         color: '#ff5c2e',
         textAlign: 'center',
         fontSize: 16,
-        fontWeight: '600',
-      },
+    },
     signupContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         marginTop: 10,
         top: hp("38%"),
         color: '#fff',
-      },
-      signupText: {
+    },
+    signupText: {
         fontSize: 14,
-        color: '#fff',
-      },
-      signupLink: {
+    },
+    signupLink: {
         fontSize: 14,
-        color: '#FFE38F',
-        fontWeight: '600',
-      },
-      forgotText: {
-        color: '#fff',
+    },
+    forgotText: {
         textAlign: 'right',
         fontSize: 14,
-      },
-
+    },
     inputError: {
         borderColor: '#ef4444',
         marginBottom: 4,
@@ -357,13 +340,15 @@ const styles = StyleSheet.create({
         top: 53,
     },
     textInputStyle: {
+        position: "absolute",
         fontSize: hp(1.7),
         flex: 1,
         color: "#202020",
         margin: 1,
-        left: hp(1),
+        left: hp(5.5),
         letterSpacing: 0.5,
-        fontFamily: "Nunito-Semibold",
+        fontFamily: "Nunito-SemiBold",
+        justifyContent: 'center',
     },
     envelopeIcon: {
         borderRadius: 10,

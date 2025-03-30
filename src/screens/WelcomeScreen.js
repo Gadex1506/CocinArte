@@ -50,7 +50,7 @@ export default function WelcomeScreen() {
             <View>
                 <TouchableOpacity 
                     style={styles.button}
-                    onPress={() => navigation.navigate('Login')}
+                    onPress={() => navigation.navigate('Parallax')}
                 >
                     <Text style={styles.startText}>Empezar</Text>
                 </TouchableOpacity>
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
     },
     startText: {
         fontSize: 20,
+        padding: 3,
         color: '#ff5c2e',
         fontFamily: 'Nunito-ExtraBold',
     },

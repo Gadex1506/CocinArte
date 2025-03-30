@@ -162,6 +162,7 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={[styles.input, nameError ? styles.inputError : null]}
             placeholder="Nombre completo"
+            placeholderTextColor={"#20202099"}
             value={name}
             onChangeText={(text) => {
               setName(text);
@@ -173,6 +174,7 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={[styles.input, emailError ? styles.inputError : null]}
             placeholder="Email"
+            placeholderTextColor={"#20202099"}
             value={email}
             onChangeText={(text) => {
               setEmail(text.trim());
@@ -186,6 +188,7 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={[styles.input, passwordError ? styles.inputError : null]}
             placeholder="Contraseña"
+            placeholderTextColor={"#20202099"}
             value={password}
             onChangeText={(text) => {
               setPassword(text);
@@ -201,6 +204,7 @@ export default function RegisterScreen({ navigation }) {
           <TextInput
             style={[styles.input, confirmPasswordError ? styles.inputError : null]}
             placeholder="Confirmar contraseña"
+            placeholderTextColor={"#20202099"}
             value={confirmPassword}
             onChangeText={(text) => {
               setConfirmPassword(text);
@@ -253,7 +257,7 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   title: {
-    fontSize: 24,
+    fontSize: 50,
     fontFamily: 'Nunito-ExtraBold',
     marginBottom: 24,
     color: '#fff',
@@ -266,7 +270,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 8,
     backgroundColor: 'white',
-    fontFamily: "Nunito-Semibold",
+    fontFamily: "Nunito-SemiBold",
     color: '#0277BD',
   },
   inputError: {
@@ -274,6 +278,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   errorText: {
+    fontFamily: "Nunito-Bold",
     color: '#fff',
     marginBottom: 10,
     fontSize: 12,
@@ -301,12 +306,14 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   loginText: {
+    fontFamily: "Nunito-SemiBold",
     fontSize: 14,
-    color: '#CED8FD',
+    color: '#ffffffcc',
   },
   loginLink: {
+    fontFamily: "Nunito-ExtraBold",
     fontSize: 14,
-    color: '#00EFFF',
+    color: '#00D8FF',
     fontWeight: '600',
   },
 });

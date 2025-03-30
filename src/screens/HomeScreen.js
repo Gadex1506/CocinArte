@@ -166,18 +166,19 @@ export default function HomeScreen() {
                     contentContainerStyle={styles.scrollView}
                 >
 
+                {/* Botón de Corazón */}
+                <TouchableOpacity style={styles.heartButton}>
+                        <HeartIcon onPress={()=>navigation.navigate('Favorite')} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
+                </TouchableOpacity>
+
+                {/* Boton de Salir */}
+                <TouchableOpacity style={[styles.ArrowLeftStartOnRectangleIcon, isLoading ? styles.buttonDisabled : null]}>
+                        <ArrowLeftStartOnRectangleIcon onPress={handleSignOut} disabled={isLoading} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
+                </TouchableOpacity>
 
                 {/* Bienvenida y Mensaje de Bienvenida*/}
                 <View style={styles.welcomeView}>
                     <Text style={styles.textNickname}>¡Hey, Artista de la Cocina!</Text>
-                    {/* Botón de Corazón */}
-                    <TouchableOpacity style={styles.heartButton}>
-                        <HeartIcon onPress={()=>navigation.navigate('Favorite')} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity style={[styles.ArrowLeftStartOnRectangleIcon,isLoading ? styles.buttonDisabled : null]}>
-                        <ArrowLeftStartOnRectangleIcon onPress={handleSignOut} disabled={isLoading} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
-                    </TouchableOpacity>
                     <View>
                         <Text style={styles.motivationTxt}>La cocina es arte, y tú eres el artista. <Text style={styles.threeTxt}>¡Dale tu toque especial!</Text></Text>
                     </View>
@@ -235,7 +236,7 @@ const styles = StyleSheet.create({
     },
     welcomeView: {
         marginHorizontal: 20,
-        top: 50,
+        top: 90,
         marginBottom: 2,
     },
     textNickname: {
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         backgroundColor: "#F6F6F6",
         padding: 5,
-        top: 70,
+        top: 105,
     },
     glassIcon: {
         borderRadius: 10,
@@ -284,10 +285,10 @@ const styles = StyleSheet.create({
         right: hp(1),
     },
     categoriesView: {
-        top: 80,
+        top: 115,
     },
     recipesView: {
-        top: 100,
+        top: 125,
     },
     heartButton: {
         width: hp(5),
@@ -302,7 +303,8 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         position: 'absolute',
-        right: (70)
+        right: (20),
+        top: (50),
     },
     ArrowLeftStartOnRectangleIcon: {
         width: hp(5),
@@ -317,9 +319,10 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         position: 'absolute',
-        right: (10)
+        left: (20),
+        top: (50),
     },
     buttonDisabled: {
         backgroundColor: '#ef9a9a',
-      },
+    },
 });
