@@ -71,45 +71,58 @@ export default function Login() {
     };
 
     const handleLogin = () => {
-        // Validar los campos antes de proceder
-        const isEmailValid = validateEmail(email);
-        const isPasswordValid = validatePassword(password);
-        
-        if (!isEmailValid || !isPasswordValid) {
-          return;
+
+        // Validar los campos de correo y contraseña antes de continuar
+        const isValidEmail = validateEmail(email);
+        const isValidPassword = validatePassword(password);
+
+        // Si el campo de correo o contraseña se encuentran vacios
+        if (!isValidEmail || !isValidPassword) {
+            return;
         }
-        
+
         setIsLoading(true);
+
         const auth = getAuth();
-        
+
         signInWithEmailAndPassword(auth, email, password)
-          .then((userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
-            navigation.replace('Welcome');
-          })
-          .catch((error) => {
-            // Traducción de errores comunes de Firebase para una mejor UX
+        .then((userCredentials) => {
+            // Usuario registrado
+            const user = userCredentials.user;
+            navigation.replace('Parallax'); // Continuar a la siguiente ventana despues de haber validado el usuario
+        })
+        .catch((error) => {
+            // Traduccion de errores mas comunes de Firebase para mejorar la experiencia de usuario
             let errorMessage;
-            switch(error.code) {
-              case 'auth/user-not-found':
-                errorMessage = 'No existe ninguna cuenta con este correo electrónico';
-                break;
-              case 'auth/wrong-password':
-                errorMessage = 'Contraseña incorrecta';
-                break;
-              case 'auth/too-many-requests':
-                errorMessage = 'Demasiados intentos fallidos. Inténtalo más tarde';
-                break;
-              default:
-                errorMessage = error.message;
+            switch (error.code) {
+                case 'auth/user-not-found':
+                    errorMessage = 'No existe ninguna cuenta con este correo electrónico';
+                    break;
+                case 'auth/wrong-password':
+                    errorMessage = 'La contraseña es incorrecta';
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = 'Demasiados intentos fallidos. Inténtalo más tarde';
+                default:
+                    errorMessage = error.message;
+                    break;
             }
             Alert.alert('Error', errorMessage);
-          })
-          .finally(() => {
+        })
+        .finally(() => {
             setIsLoading(false);
-          });
-      };
+        });
+    };
+
+    // Muestra un spinner mientras se verifica el estado de autenticación
+    if (initializing) {
+        return (
+            <View style={[styles.container, styles.loadingContainer]}>
+                <ActivityIndicator size="large" color="#ffffff"/>
+                <Text style={style.loadingText}>Cargando...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -134,7 +147,6 @@ export default function Login() {
 
                 {/* Cajas para ingresar los datos */}
                 <View>
-
                     {/* Caja de Correo Electrónico */}
                     <View style={styles.cajaCorreo}>
 
@@ -145,7 +157,7 @@ export default function Login() {
 
                         <TextInput 
                             placeholder='Ingresa tu Correo Electrónico Aquí...'
-                            placeholderTextColor={"#ff5c2ebb"}
+                            placeholderTextColor={"#20202099"}
                             style={[styles.textInputStyle, emailError ? styles.inputError: null]}
                             value={email}
                             onChangeText={(text) => {
@@ -168,7 +180,7 @@ export default function Login() {
 
                         <TextInput 
                             placeholder='Ingresa tu Contraseña Aquí...'
-                            placeholderTextColor={"#ff5c2ebb"}
+                            placeholderTextColor={"#20202099"}
                             style={[styles.textInputStyle, passwordError ? styles.inputError : null]}
                             value={password}
                             onChangeText={(text) => {
@@ -206,6 +218,20 @@ export default function Login() {
 
                 </View>
 
+                {/* Boton de Iniciar Sesion */}
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleLogin}
+                    disabled={isLoading}
+                >
+                    {isLoading ? (
+                            <ActivityIndicator color="white"/>
+                        ) : (
+                            <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                        )
+                    }
+                </TouchableOpacity>
+
                 </ScrollView>
 
             </SafeAreaView>
@@ -220,7 +246,7 @@ export default function Login() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ff5c2e',
+        backgroundColor: '#202020',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 10,
@@ -233,6 +259,16 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: wp(100),
         height: hp(100),
+        top: 10,
+        opacity: 0.3,
+    },
+    loadingContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 10,
+        color: '#64748b',
     },
     titleSubtitle: {
         position: 'absolute',
@@ -265,8 +301,7 @@ const styles = StyleSheet.create({
         alignItems: "center", //Alinear elementos verticalmente
         height: hp("6.6%"),
         width: wp("90%"),
-        left: -hp(0.5),
-        marginBottom: hp("2%"),
+        marginBottom: hp("4%"),
         top: hp("38%"),
     },
     button: {
@@ -313,15 +348,18 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     errorText: {
-        color: '#ef4444',
-        marginBottom: 10,
+        position: "absolute",
+        fontFamily: "Nunito-Bold",
+        color: '#ff5c2e',
+        marginTop: 4,
+        marginLeft: 10,
         fontSize: 12,
-        marginLeft: 4,
+        top: 53,
     },
     textInputStyle: {
         fontSize: hp(1.7),
         flex: 1,
-        color: "#ff5c2e",
+        color: "#202020",
         margin: 1,
         left: hp(1),
         letterSpacing: 0.5,
@@ -329,5 +367,43 @@ const styles = StyleSheet.create({
     },
     envelopeIcon: {
         borderRadius: 10,
+    },
+    button: {
+        backgroundColor: '#ff5c2e',
+        padding: 14,
+        borderRadius: 8,
+        marginTop: hp(42),
+        alignSelf: 'center',
+        justifyContent: 'center',
+        width: wp("50%"),
+    },
+    buttonDisabled: {
+        backgroundColor: '#93c5fd',
+    },
+    buttonText: {
+        color: 'white',
+        fontFamily: "Nunito-Bold",
+        textAlign: 'center',
+        fontSize: 20,
+    },
+    forgotText: {
+        color: '#1976d2',
+        textAlign: 'right',
+        marginTop: 12,
+        fontSize: 14,
+    },
+    signupContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 24,
+    },
+    signupText: {
+        fontSize: 14,
+        color: '#64748b',
+    },
+    signupLink: {
+        fontSize: 14,
+        color: '#1976d2',
+        fontWeight: '600',
     },
 });
