@@ -50,7 +50,7 @@ export default function WelcomeScreen() {
             <View>
                 <TouchableOpacity 
                     style={styles.button}
-                    onPress={() => navigation.navigate('Parallax')}
+                    onPress={() => navigation.navigate('Login')}
                 >
                     <Text style={styles.startText}>Empezar</Text>
                 </TouchableOpacity>

@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
         paddingBottom: 50,
         gap: 6,
         paddingTop: 14,
-
     },
     welcomeView: {
         marginHorizontal: 20,
