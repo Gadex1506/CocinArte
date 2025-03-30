@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {View, Text, StyleSheet, Image, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, Image, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, 
@@ -70,6 +70,47 @@ export default function Login() {
         return true;
     };
 
+    const handleLogin = () => {
+        // Validar los campos antes de proceder
+        const isEmailValid = validateEmail(email);
+        const isPasswordValid = validatePassword(password);
+        
+        if (!isEmailValid || !isPasswordValid) {
+          return;
+        }
+        
+        setIsLoading(true);
+        const auth = getAuth();
+        
+        signInWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            navigation.replace('Welcome');
+          })
+          .catch((error) => {
+            // Traducción de errores comunes de Firebase para una mejor UX
+            let errorMessage;
+            switch(error.code) {
+              case 'auth/user-not-found':
+                errorMessage = 'No existe ninguna cuenta con este correo electrónico';
+                break;
+              case 'auth/wrong-password':
+                errorMessage = 'Contraseña incorrecta';
+                break;
+              case 'auth/too-many-requests':
+                errorMessage = 'Demasiados intentos fallidos. Inténtalo más tarde';
+                break;
+              default:
+                errorMessage = error.message;
+            }
+            Alert.alert('Error', errorMessage);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      };
+
     return (
         <View style={styles.container}>
 
@@ -137,6 +178,30 @@ export default function Login() {
                             secureTextEntry
                         />
                         { passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null }
+
+                    </View>
+
+                    <TouchableOpacity 
+                        style={[styles.button, isLoading ? styles.buttonDisabled : null]} 
+                        onPress={handleLogin}
+                        disabled={isLoading}
+                        >
+                        {isLoading ? (
+                            <ActivityIndicator color="white" />
+                        ) : (
+                            <Text style={styles.buttonText}>Iniciar Sesión</Text>
+                        )}
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.signupContainer} onPress={() => navigation.navigate('ForgotPasswordScreen')}>
+                        <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+                    </TouchableOpacity>
+        
+                    <View style={styles.signupContainer}>
+                        <Text style={styles.signupText}>¿No tienes cuenta? </Text>
+                        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+                            <Text style={styles.signupLink}>Regístrate</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View>
@@ -204,6 +269,45 @@ const styles = StyleSheet.create({
         marginBottom: hp("2%"),
         top: hp("38%"),
     },
+    button: {
+        backgroundColor: '#FFE38F',
+        padding: 14,
+        borderRadius: 18,
+        top: hp("38%"),
+        marginHorizontal: 100,
+
+      },
+      buttonDisabled: {
+        backgroundColor: '#FFE38F',
+      },
+      buttonText: {
+        color: '#ff5c2e',
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: '600',
+      },
+    signupContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+        top: hp("38%"),
+        color: '#fff',
+      },
+      signupText: {
+        fontSize: 14,
+        color: '#fff',
+      },
+      signupLink: {
+        fontSize: 14,
+        color: '#FFE38F',
+        fontWeight: '600',
+      },
+      forgotText: {
+        color: '#fff',
+        textAlign: 'right',
+        fontSize: 14,
+      },
+
     inputError: {
         borderColor: '#ef4444',
         marginBottom: 4,

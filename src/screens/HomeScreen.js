@@ -1,6 +1,6 @@
-import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
-import { MagnifyingGlassIcon, CameraIcon} from 'react-native-heroicons/outline';
+import { MagnifyingGlassIcon, CameraIcon, ArrowLeftStartOnRectangleIcon} from 'react-native-heroicons/outline';
 import { HeartIcon} from 'react-native-heroicons/solid';
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
@@ -10,6 +10,7 @@ import axios from 'axios';
 import Recipes from '../components/Recipes';
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
+import { getAuth, signOut } from "firebase/auth";
 
 export default function HomeScreen() {
 
@@ -18,6 +19,9 @@ export default function HomeScreen() {
     const [meals, setMeals] = useState([]);
     const [filteredMeals, setFilteredMeals] = useState([]);
     const [searchText, setSearchText] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [user, setUser] = useState(null);
+    const [loadingUser, setLoadingUser] = useState(true);
     const navigation = useNavigation();
 
     const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // API de Google Translate
@@ -44,6 +48,29 @@ export default function HomeScreen() {
         getRecipes(category);
         setMeals([]);
     };
+
+    useEffect(() => {
+        const auth = getAuth();
+        // Obtener el usuario actual
+        const currentUser = auth.currentUser;
+        if (currentUser) {
+          setUser(currentUser);
+        }
+        setLoadingUser(false);
+      }, []);
+    //Funcion para cerrar sesion
+    const handleSignOut = () => {
+        setIsLoading(true);
+        const auth = getAuth();
+        signOut(auth).then(() => {
+          // Sign-out successful.
+          navigation.replace('Login');
+        }).catch((error) => {
+          // An error happened.
+          Alert.alert('Error', error.message);
+          setIsLoading(false);
+        });
+      };
 
     const getCategories =  async () => {
         try {
@@ -146,6 +173,10 @@ export default function HomeScreen() {
                     {/* Botón de Corazón */}
                     <TouchableOpacity style={styles.heartButton}>
                         <HeartIcon onPress={()=>navigation.navigate('Favorite')} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={[styles.ArrowLeftStartOnRectangleIcon,isLoading ? styles.buttonDisabled : null]}>
+                        <ArrowLeftStartOnRectangleIcon onPress={handleSignOut} disabled={isLoading} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.motivationTxt}>La cocina es arte, y tú eres el artista. <Text style={styles.threeTxt}>¡Dale tu toque especial!</Text></Text>
@@ -271,6 +302,24 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         position: 'absolute',
+        right: (70)
+    },
+    ArrowLeftStartOnRectangleIcon: {
+        width: hp(5),
+        height: hp(5),
+        backgroundColor: "#fff",
+        borderRadius: hp(2.5),
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 3,
+        position: 'absolute',
         right: (10)
     },
+    buttonDisabled: {
+        backgroundColor: '#ef9a9a',
+      },
 });

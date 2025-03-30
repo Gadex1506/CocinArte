@@ -12,9 +12,12 @@ import Vision from '../screens/Vision';
 import Favorite from '../screens/Favorite';
 import { FavoritesProvider } from '../context/FavoriteContext';
 import Login from '../screens/loginScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import RegisterScreen from '../screens/RegisterScreen';
 
 //Credenciales a Firebase
 import '../components/FirebaseConfig';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +33,8 @@ export default function AppNavigation() {
                 >
                     <Stack.Screen name="Welcome" component={WelcomeScreen} />
                     <Stack.Screen name="Login" component={Login} />
+                    <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+                    <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
                     <Stack.Screen name="Parallax" component={ParallaxScreen} />
                     <Stack.Screen name="Home" component={HomeScreen} />
                     <Stack.Screen name="Details" component={Details} />
