@@ -11,7 +11,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Image
+  Image,
+  Vibration
 } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useFonts } from 'expo-font';
@@ -168,6 +169,7 @@ export default function RegisterScreen({ navigation }) {
               setName(text);
               if (nameError) validateName(text);
             }}
+            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
           />
           {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
           
@@ -182,6 +184,7 @@ export default function RegisterScreen({ navigation }) {
             }}
             keyboardType="email-address"
             autoCapitalize="none"
+            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
           />
           {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
           
@@ -198,6 +201,7 @@ export default function RegisterScreen({ navigation }) {
               }
             }}
             secureTextEntry
+            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
           />
           {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
           
@@ -211,6 +215,7 @@ export default function RegisterScreen({ navigation }) {
               if (confirmPasswordError) validateConfirmPassword(text);
             }}
             secureTextEntry
+            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
           />
           {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
           
@@ -228,7 +233,10 @@ export default function RegisterScreen({ navigation }) {
           
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <TouchableOpacity onPress={() => {
+              Vibration.vibrate(25);
+              navigation.navigate('Login');
+            }}>
               <Text style={styles.loginLink}>Iniciar sesión</Text>
             </TouchableOpacity>
           </View>
@@ -242,15 +250,20 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#0277BD',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 10,
       },
-      scrollContainer: {
-        flexGrow: 1,
-      },
-      fruitBackground: {
-          position: 'absolute',
-          width: wp(100),
-          height: hp(100),
-      },
+    scrollContainer: {
+      flexGrow: 1,
+      paddingBottom: 50,
+      paddingTop: 14,
+    },
+    fruitBackground: {
+      position: 'absolute',
+      width: wp(100),
+      height: hp(100),
+    },
   innerContainer: {
     flex: 1,
     justifyContent: 'center',

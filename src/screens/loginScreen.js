@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {View, Text, StyleSheet, Image, TextInput, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, Image, TextInput, Alert, ActivityIndicator, SafeAreaView, ScrollView, TouchableOpacity, Vibration, Animated} from 'react-native';
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { StatusBar } from 'expo-status-bar';
 import { widthPercentageToDP as wp, 
@@ -28,6 +28,22 @@ export default function Login() {
         'Nunito-Bold': require('@expo-google-fonts/nunito/Nunito_700Bold.ttf'),
         'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
     });
+
+    // Animación de shake
+    const shakeAnim = useRef(new Animated.Value(0)).current;
+
+    // Función de animación de sacudida (shake)
+    const shakeAnimation = () => {
+        Animated.sequence([
+            Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: -10, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: 8, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: -8, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: 5, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: -5, duration: 50, useNativeDriver: true }),
+            Animated.timing(shakeAnim, { toValue: 0, duration: 50, useNativeDriver: true }),
+        ]).start();
+    };
 
     useEffect(() => {
         const auth = getAuth();
@@ -78,6 +94,8 @@ export default function Login() {
 
         // Si el campo de correo o contraseña se encuentran vacios
         if (!isValidEmail || !isValidPassword) {
+            Vibration.vibrate(300);
+            shakeAnimation();
             return;
         }
 
@@ -111,6 +129,8 @@ export default function Login() {
                     break;
             }
             Alert.alert('Error', errorMessage);
+            Vibration.vibrate([100,200,100]);
+            shakeAnimation();
         })
         .finally(() => {
             setIsLoading(false);
@@ -128,7 +148,7 @@ export default function Login() {
     }
 
     return (
-        <View style={styles.container}>
+        <Animated.View style={[styles.container, { transform: [{ translateX: shakeAnim }] }]}>
 
             <StatusBar style='light'/>
 
@@ -169,6 +189,7 @@ export default function Login() {
                             }}
                             keyboardType="email-address"
                             autoCapitalize="none"
+                            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
                         />
                         { emailError ? <Text style={styles.errorText}>{emailError}</Text> : null }
                     </View>
@@ -191,6 +212,7 @@ export default function Login() {
                                 if (passwordError) validatePassword(text);
                             }}
                             secureTextEntry
+                            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
                         />
                         { passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null }
 
@@ -214,7 +236,10 @@ export default function Login() {
         
                     <View style={styles.signupContainer}>
                         <Text style={[styles.signupText, {color: "#ffffffcc", fontFamily: "Nunito-SemiBold"}]}>¿No tienes cuenta? </Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+                        <TouchableOpacity onPress={() => {
+                            Vibration.vibrate(25);
+                            navigation.navigate('RegisterScreen');
+                        }}>
                             <Text style={[styles.signupLink, { color: "#ff5c2e", fontFamily: "Nunito-Bold" }]}>Regístrate</Text>
                         </TouchableOpacity>
                     </View>
@@ -228,7 +253,7 @@ export default function Login() {
             
             
 
-        </View>
+        </Animated.View>
     );
 }
 
