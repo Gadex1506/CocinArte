@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderColor: '#d1d5db',
     borderWidth: 1,
-    marginBottom: 22,
+    marginBottom: 15,
     paddingHorizontal: 12,
     borderRadius: 8,
     backgroundColor: 'white',
@@ -153,6 +153,7 @@ const styles = StyleSheet.create({
   errorText: {
     fontFamily: "Nunito-SemiBold",
     color: '#fff',
+    marginTop: -8,
     marginBottom: 20,
     fontSize: 12,
     marginLeft: 4,
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
   },
   linkText: {
     fontFamily: "Nunito-SemiBold",
-    color: '#ffffffbb',
+    color: '#ffffffdd',
     textAlign: 'center',
     marginTop: 10,
     fontSize: 14,

@@ -38,8 +38,20 @@ export default function HomeScreen() {
     });
 
     useEffect(() => { 
-        getCategories();
-        getRecipes();
+        const auth = getAuth();
+
+        const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+            setUser(currentUser);
+            setLoadingUser(false);
+
+            if (currentUser) {
+                getCategories();
+                getRecipes();
+            }
+        });
+
+        // Limpiar el observador cuando el componente se desmonte
+        return () => unsubscribe();
     }, []);
 
     const handleChangeCategory = (category) => {
@@ -54,23 +66,24 @@ export default function HomeScreen() {
         // Obtener el usuario actual
         const currentUser = auth.currentUser;
         if (currentUser) {
-          setUser(currentUser);
+            setUser(currentUser);
         }
         setLoadingUser(false);
-      }, []);
+    }, []);
+
     //Funcion para cerrar sesion
     const handleSignOut = () => {
         setIsLoading(true);
         const auth = getAuth();
         signOut(auth).then(() => {
-          // Sign-out successful.
-          navigation.replace('Login');
+            // Sign-out successful.
+            navigation.replace('Login');
         }).catch((error) => {
-          // An error happened.
-          Alert.alert('Error', error.message);
-          setIsLoading(false);
+            // An error happened.
+            Alert.alert('Error', error.message);
+            setIsLoading(false);
         });
-      };
+    };
 
     const getCategories =  async () => {
         try {
@@ -150,11 +163,11 @@ export default function HomeScreen() {
         );
 
         return response.data.data.translations[0].translatedText;
-    } catch (error) {
-        console.log("Error en la traducción:", error);
-        return text; // Si falla la traducción, usa el texto original
-    }
-};
+        } catch (error) {
+            console.log("Error en la traducción:", error);
+            return text; // Si falla la traducción, usa el texto original
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -178,7 +191,7 @@ export default function HomeScreen() {
 
                 {/* Bienvenida y Mensaje de Bienvenida*/}
                 <View style={styles.welcomeView}>
-                    <Text style={styles.textNickname}>¡Hey, Artista de la Cocina!</Text>
+                    <Text style={styles.textNickname}>¡Hola, {user ? user.displayName : 'Artista de la Cocina!'}!</Text>
                     <View>
                         <Text style={styles.motivationTxt}>La cocina es arte, y tú eres el artista. <Text style={styles.threeTxt}>¡Dale tu toque especial!</Text></Text>
                     </View>

@@ -148,7 +148,7 @@ export default function Login() {
     }
 
     return (
-        <Animated.View style={[styles.container, { transform: [{ translateX: shakeAnim }] }]}>
+        <View style={styles.container}>
 
             <StatusBar style='light'/>
 
@@ -169,7 +169,7 @@ export default function Login() {
                 </View>
 
                 {/* Cajas para ingresar los datos */}
-                <View>
+                <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
                     {/* Caja de Correo Electrónico */}
                     <View style={styles.cajaCorreo}>
 
@@ -244,16 +244,12 @@ export default function Login() {
                         </TouchableOpacity>
                     </View>
 
-                </View>
+                </Animated.View>
 
                 </ScrollView>
 
             </SafeAreaView>
-
-            
-            
-
-        </Animated.View>
+        </View>
     );
 }
 

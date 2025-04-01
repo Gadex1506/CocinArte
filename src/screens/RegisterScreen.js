@@ -1,5 +1,5 @@
 // RegisterScreen.js
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   StyleSheet, 
   Text, 
@@ -12,7 +12,8 @@ import {
   Platform,
   ScrollView,
   Image,
-  Vibration
+  Vibration,
+  Animated
 } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { useFonts } from 'expo-font';
@@ -45,6 +46,22 @@ export default function RegisterScreen({ navigation }) {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmPasswordError, setConfirmPasswordError] = useState('');
+
+  // Animación de shake
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+  
+      // Función de animación de sacudida (shake)
+  const shakeAnimation = () => {
+    Animated.sequence([
+        Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -10, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 8, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -8, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 5, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: -5, duration: 50, useNativeDriver: true }),
+        Animated.timing(shakeAnim, { toValue: 0, duration: 50, useNativeDriver: true }),
+    ]).start();
+  };
 
   // Validación del nombre
   const validateName = (name) => {
@@ -104,6 +121,8 @@ export default function RegisterScreen({ navigation }) {
     const isConfirmPasswordValid = validateConfirmPassword(confirmPassword);
     
     if (!isNameValid || !isEmailValid || !isPasswordValid || !isConfirmPasswordValid) {
+      Vibration.vibrate(300);
+      shakeAnimation();
       return;
     }
     
@@ -154,92 +173,96 @@ export default function RegisterScreen({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        >
         <View style={styles.innerContainer}>
         {/* Imagen de fondo con opacidad */}
         <Image source={require("../../assets/images/background.png")} style={styles.fruitBackground} />
           <Text style={styles.title}>Crear Cuenta</Text>
           
-          <TextInput
-            style={[styles.input, nameError ? styles.inputError : null]}
-            placeholder="Nombre completo"
-            placeholderTextColor={"#20202099"}
-            value={name}
-            onChangeText={(text) => {
-              setName(text);
-              if (nameError) validateName(text);
-            }}
-            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
-          />
-          {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
-          
-          <TextInput
-            style={[styles.input, emailError ? styles.inputError : null]}
-            placeholder="Email"
-            placeholderTextColor={"#20202099"}
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text.trim());
-              if (emailError) validateEmail(text);
-            }}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
-          />
-          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
-          
-          <TextInput
-            style={[styles.input, passwordError ? styles.inputError : null]}
-            placeholder="Contraseña"
-            placeholderTextColor={"#20202099"}
-            value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              if (passwordError) validatePassword(text);
-              if (confirmPassword && confirmPasswordError) {
-                validateConfirmPassword(confirmPassword);
-              }
-            }}
-            secureTextEntry
-            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
-          />
-          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
-          
-          <TextInput
-            style={[styles.input, confirmPasswordError ? styles.inputError : null]}
-            placeholder="Confirmar contraseña"
-            placeholderTextColor={"#20202099"}
-            value={confirmPassword}
-            onChangeText={(text) => {
-              setConfirmPassword(text);
-              if (confirmPasswordError) validateConfirmPassword(text);
-            }}
-            secureTextEntry
-            onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
-          />
-          {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
-          
-          <TouchableOpacity 
-            style={[styles.button, isLoading ? styles.buttonDisabled : null]} 
-            onPress={handleRegister}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="white" />
-            ) : (
-              <Text style={styles.buttonText}>Registrarse</Text>
-            )}
-          </TouchableOpacity>
-          
-          <View style={styles.loginContainer}>
-            <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
-            <TouchableOpacity onPress={() => {
-              Vibration.vibrate(25);
-              navigation.navigate('Login');
-            }}>
-              <Text style={styles.loginLink}>Iniciar sesión</Text>
+          <Animated.View style={{ transform: [{ translateX: shakeAnim }] }}>
+            <TextInput
+              style={[styles.input, nameError ? styles.inputError : null]}
+              placeholder="Nombre completo"
+              placeholderTextColor={"#20202099"}
+              value={name}
+              onChangeText={(text) => {
+                setName(text);
+                if (nameError) validateName(text);
+              }}
+              onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
+            />
+            {nameError ? <Text style={styles.errorText}>{nameError}</Text> : null}
+            
+            <TextInput
+              style={[styles.input, emailError ? styles.inputError : null]}
+              placeholder="Email"
+              placeholderTextColor={"#20202099"}
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text.trim());
+                if (emailError) validateEmail(text);
+              }}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
+            />
+            {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+            
+            <TextInput
+              style={[styles.input, passwordError ? styles.inputError : null]}
+              placeholder="Contraseña"
+              placeholderTextColor={"#20202099"}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                if (passwordError) validatePassword(text);
+                if (confirmPassword && confirmPasswordError) {
+                  validateConfirmPassword(confirmPassword);
+                }
+              }}
+              secureTextEntry
+              onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
+            />
+            {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
+            
+            <TextInput
+              style={[styles.input, confirmPasswordError ? styles.inputError : null]}
+              placeholder="Confirmar contraseña"
+              placeholderTextColor={"#20202099"}
+              value={confirmPassword}
+              onChangeText={(text) => {
+                setConfirmPassword(text);
+                if (confirmPasswordError) validateConfirmPassword(text);
+              }}
+              secureTextEntry
+              onFocus={() => Vibration.vibrate(25)} // Agregar vibración al enfocar el input
+            />
+            {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
+            
+            <TouchableOpacity 
+              style={[styles.button, isLoading ? styles.buttonDisabled : null]} 
+              onPress={handleRegister}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text style={styles.buttonText}>Registrarse</Text>
+              )}
             </TouchableOpacity>
-          </View>
+            
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
+              <TouchableOpacity onPress={() => {
+                Vibration.vibrate(25);
+                navigation.navigate('Login');
+              }}>
+                <Text style={styles.loginLink}>Iniciar sesión</Text>
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -252,12 +275,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#0277BD',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 10,
-      },
+    },
     scrollContainer: {
-      flexGrow: 1,
+      flex: 1,
       paddingBottom: 50,
       paddingTop: 14,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     fruitBackground: {
       position: 'absolute',
