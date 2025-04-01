@@ -50,7 +50,7 @@ export default function RegisterScreen({ navigation }) {
   // Animación de shake
   const shakeAnim = useRef(new Animated.Value(0)).current;
   
-      // Función de animación de sacudida (shake)
+  // Función de animación de sacudida (shake)
   const shakeAnimation = () => {
     Animated.sequence([
         Animated.timing(shakeAnim, { toValue: 10, duration: 50, useNativeDriver: true }),
