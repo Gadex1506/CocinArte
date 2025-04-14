@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, StatusBar } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, StatusBar, TextInput, FlatList } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
@@ -13,8 +13,7 @@ import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { useFonts } from 'expo-font';
 
 export default function ObjectDetection() {
-    const [image, setImage] = useState(null);
-    const [textDetected, setTextDetected] = useState('');
+    //const [image, setImage] = useState(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [hasPermission, setHasPermission] = useState(null);
 
@@ -51,8 +50,11 @@ export default function ObjectDetection() {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
-            analyzeImage(result.assets[0].base64);
+            /*setImage(result.assets[0].uri);
+            analyzeImage(result.assets[0].base64);*/
+            const uri = result.assets[0].uri;
+            const base64 = result.assets[0].base64;
+            analyzeImage(base64, uri);
         } else {
             setIsProcessing(false); // Si el usuario cancela, mostramos los elementos de nuevo
         }
@@ -69,40 +71,72 @@ export default function ObjectDetection() {
         });
 
         if (!result.canceled) {
-            setImage(result.assets[0].uri);
-            analyzeImage(result.assets[0].base64);
+            /*setImage(result.assets[0].uri);
+            analyzeImage(result.assets[0].base64);*/
+            const uri = result.assets[0].uri;
+            const base64 = result.assets[0].base64;
+            analyzeImage(base64, uri);
         }else {
             setIsProcessing(false); // Si el usuario cancela, mostramos los elementos de nuevo
         }
     };
 
-    // Enviar la imagen a Google Cloud Vision
-    const analyzeImage = async (base64Image) => {
-        const API_KEY = 'AIzaSyDYLIaALM-jXH-LXu7JhrbTV0sVSnqigGI'; // API de Google Cloud Vision
+    // Analisis y reconocimiento de ingredientes con Clarifai 
+    const analyzeImage = async (base64Image, imageUri) => {
+        const PAT = '313f173d5b7f4c008147aaf8684ee270'; // Personal Access Token
+        const USER_ID = 'clarifai'; // User ID de Clarifai
+        const APP_ID = 'main'; // App ID en Clarifai
+        const MODEL_ID = 'food-item-v1-recognition';
+        const MODEL_VERSION_ID = 'dfebc169854e429086aceb8368662641'; // Versión pública del modelo
+        const url = `https://api.clarifai.com/v2/models/${MODEL_ID}/versions/${MODEL_VERSION_ID}/outputs`;
+
+        const data = {
+            user_app_id: {
+                user_id: USER_ID,
+                app_id: APP_ID,
+            },
+            inputs: [
+                {
+                    data: {
+                        image: {
+                            base64: base64Image,
+                        },
+                    },
+                },
+            ],
+            model: {
+                output_info: {
+                    output_config: {
+                        max_concepts: 12, // Limita a los 10 mejores resultados
+                        //min_value: 0.2  // Solo conceptos con 20% o más de certeza
+                    },
+                },
+            },
+        };
 
         try {
-            const response = await axios.post(
-                `https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}`,
-                {
-                requests: [
-                    {
-                    image: { content: base64Image },
-                    features: [{ type: 'LABEL_DETECTION', maxResults: 5 }],
-                    },
-                ],
-                }
-            );
+            const response = await axios.post(url, data, {
+                headers: {
+                    'Authorization': `Key ${PAT}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+      
+            const concepts = response.data.outputs[0].data.concepts;
+            const detectedLabels = concepts.map(item => item.name);
+      
+            setIsProcessing(false);
+            navigation.navigate('ResultScreen', {
+                image: imageUri,
+                initialIngredients: detectedLabels,
+            });
 
-            const labels = response.data.responses[0].labelAnnotations;
-            const detectedText = labels.map(label => label.description).join(', ');
-
-            setTextDetected(detectedText);
         } catch (error) {
-            console.error('Error al analizar la imagen:', error);
-            setTextDetected('Error al procesar la imagen');
+            console.error('Error con Clarifai API:', error?.response?.data || error.message);
+            //setTextDetected('Error al procesar con Clarifai');
         }
-
-        setIsProcessing(false); // Mostramos los elementos de nuevo
+      
+        //setIsProcessing(false);
     };
 
     return (
@@ -116,7 +150,7 @@ export default function ObjectDetection() {
             </TouchableOpacity>
 
             {/* Lottie Imagen de Comida Pasando */}
-            {!isProcessing && textDetected == '' && (
+            {!isProcessing /*&& textDetected == ''*/ && (
                 <>
                     <View>
                         <LottieView
@@ -131,17 +165,14 @@ export default function ObjectDetection() {
             )}
 
             {/* Texto de contexto de la pantalla */}
-            {!isProcessing && textDetected == '' && (
+            {!isProcessing /*&& textDetected == ''*/ && (
                 <>
                     <Text style={styles.title}>¡Bienvenido a la <Text style={styles.subtitle}>detección de alimentos</Text> por cámara!</Text>
                 </>
             )}
 
-            {/* Imagen de la foto tomada */}
-            {textDetected && image && <Image source={{ uri: image }} style={styles.image} />}
-
             {/* Boton de Tomar Foto */}
-            {!isProcessing && textDetected == '' && (
+            {!isProcessing /*&& textDetected == ''*/ && (
                 <>
 
                     <TouchableOpacity style={styles.photobutton} onPress={takePicture}>
@@ -158,10 +189,10 @@ export default function ObjectDetection() {
             )}
 
             {/* Texto de tu resultado es */}
-            {textDetected != '' && <Text style={styles.resultTitle}>Tu resultado es:</Text>}
+            {/*textDetected != '' && <Text style={styles.resultTitle}>Tu resultado es:</Text>*/}
 
             {/* Texto que muestra el resultado de la imagen*/}
-            {textDetected != '' && <Text style={styles.result}>{textDetected}</Text>}
+            {/*textDetected != '' && <Text style={styles.result}>{textDetected}</Text>*/}
         </View>
     );
 }
@@ -246,5 +277,34 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: '#fff',
         top: hp(22),
+    },
+    ingredientItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#333',
+        padding: 10,
+        marginVertical: 5,
+        borderRadius: 8,
+        width: wp(80),
+    },
+    ingredientText: {
+        color: '#fff',
+        fontFamily: "Nunito-Medium",
+        fontSize: 16,
+    },
+    removeButton: {
+        color: '#ff5c2e',
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    input: {
+        backgroundColor: '#444',
+        color: 'white',
+        borderRadius: 8,
+        padding: 10,
+        width: wp(80),
+        marginTop: 15,
+        fontFamily: 'Nunito-Regular',
     },
 });

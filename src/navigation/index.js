@@ -14,6 +14,8 @@ import { FavoritesProvider } from '../context/FavoriteContext';
 import Login from '../screens/loginScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import RegisterScreen from '../screens/RegisterScreen';
+import ResultRecognitionScreen from '../screens/ResultRecognitionScreen';
+import GenerateRecipe from '../screens/GenerateRecipeScreen';
 
 //Credenciales a Firebase
 import '../components/FirebaseConfig';
@@ -38,6 +40,8 @@ export default function AppNavigation() {
                     <Stack.Screen name="Parallax" component={ParallaxScreen} />
                     <Stack.Screen name="Details" component={Details} />
                     <Stack.Screen name="Vision" component={Vision} />
+                    <Stack.Screen name="ResultScreen" component={ResultRecognitionScreen} />
+                    <Stack.Screen name="GenerateRecipe" component={GenerateRecipe} />
                     <Stack.Screen name="Favorite" component={Favorite} />
                 </Stack.Navigator>
             </NavigationContainer>
