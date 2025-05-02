@@ -1,1 +1,1 @@
-[![Ver Prototipo en Canva](https://img.shields.io/badge/Canva-View_Prototype-00C4CC?style=for-the-badge&logo=canva)](https://www.canva.com/design/DAGhYzOuJys/X235DtVmfUt8Ke3BQyPr3g/view?utm_content=DAGhYzOuJys&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h7d6e3007bf)
+[Ver prototipo final](https://www.canva.com/design/DAGhYzOuJys/X235DtVmfUt8Ke3BQyPr3g/view)
