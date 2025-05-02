@@ -86,7 +86,7 @@ export default function ResultRecognitionScreen() {
                 )}
             />
 
-            <TouchableOpacity onPress={() => navigation.navigate("GenerateRecipe")} style={styles.button} >
+            <TouchableOpacity onPress={() => navigation.navigate('GenerateRecipe', {ingredients})} style={styles.button} >
                 <Image 
                     source={require('../../assets/icons/10.png')}
                     style={{ width: 45, height: 45, tintColor: '#0277BD' }}
