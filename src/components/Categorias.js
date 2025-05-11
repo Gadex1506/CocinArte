@@ -8,6 +8,7 @@ import Animated, {FadeInDown} from 'react-native-reanimated';
 import CachedImage from "react-native-expo-cached-image";
 import axios from 'axios';
 import { useFonts } from 'expo-font';
+import { GOOGLE_TRANSLATION_API } from '@env';
 
 export default function Categorias({categories, activeCategory, handleChangeCategory}){
     
@@ -43,8 +44,8 @@ export default function Categorias({categories, activeCategory, handleChangeCate
     };
 
     const translateText = async (text, targetLanguage = 'es') => {
-        const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek';
-        const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+        const API_KEY = GOOGLE_TRANSLATION_API;
+        const url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
         
         try {
             const { data } = await axios.post(url, {

@@ -11,6 +11,7 @@ import { widthPercentageToDP as wp,
 import { useNavigation } from "@react-navigation/native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { useFonts } from 'expo-font';
+import { PAT_CLARIFAI, USER_ID_CLARIFAI } from '@env';
 
 export default function ObjectDetection() {
     //const [image, setImage] = useState(null);
@@ -83,8 +84,8 @@ export default function ObjectDetection() {
 
     // Analisis y reconocimiento de ingredientes con Clarifai 
     const analyzeImage = async (base64Image, imageUri) => {
-        const PAT = '313f173d5b7f4c008147aaf8684ee270'; // Personal Access Token
-        const USER_ID = 'clarifai'; // User ID de Clarifai
+        const PAT = PAT_CLARIFAI; // Personal Access Token
+        const USER_ID = USER_ID_CLARIFAI; // User ID de Clarifai
         const APP_ID = 'main'; // App ID en Clarifai
         const MODEL_ID = 'food-item-v1-recognition';
         const MODEL_VERSION_ID = 'dfebc169854e429086aceb8368662641'; // Versión pública del modelo

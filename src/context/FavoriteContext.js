@@ -9,7 +9,6 @@ import { onAuthStateChanged, getAuth } from "firebase/auth";
 
 const FavoritesContext = createContext();
 
-
 const database = getFirestore(app);
 
 export const FavoritesProvider = ({ children }) => {

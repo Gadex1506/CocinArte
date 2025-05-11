@@ -10,12 +10,9 @@ import { FlashList } from "@shopify/flash-list";
 import YoutubeIframe from 'react-native-youtube-iframe';
 import { useFavorites } from "../context/FavoriteContext";
 import { useFonts } from 'expo-font';
-
-
+import { GOOGLE_TRANSLATION_API } from '@env';
 
 export default function Details(props) {
-
-
 
     let item = props.route.params;
 
@@ -87,8 +84,8 @@ export default function Details(props) {
     //Metodo para consumir la API de google Translate
     const translateText = async (text) => {
 
-      const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // API de Google Translate
-      const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
+      const API_KEY = GOOGLE_TRANSLATION_API; // API de Google Translate
+      const url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
 
       try {
         const response = await axios.post(url, {

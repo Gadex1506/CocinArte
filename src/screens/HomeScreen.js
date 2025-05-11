@@ -11,6 +11,7 @@ import Recipes from '../components/Recipes';
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
 import { getAuth, signOut } from "firebase/auth";
+import { GOOGLE_TRANSLATION_API } from '@env';
 
 
 export default function HomeScreen() {
@@ -25,7 +26,8 @@ export default function HomeScreen() {
     const [loadingUser, setLoadingUser] = useState(true);
     const navigation = useNavigation();
 
-    const apiKey = 'AIzaSyD8_zr5ysaD8JsnHGxhphwnHJpyLGHXwek'; // API de Google Translate
+    //const API_KEY = process.env.GOOGLE_TRANSLATION_API;
+    const API_KEY = GOOGLE_TRANSLATION_API; // API de Google Translate
 
     const searchTimeout = useRef(null);
 
@@ -154,7 +156,7 @@ export default function HomeScreen() {
     const translateToEnglish = async (text) => {
     try {
         const response = await axios.post(
-            `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`,
+            `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`,
             {
                 q: text,
                 source: "es", // Español
