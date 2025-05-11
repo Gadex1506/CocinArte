@@ -1,16 +1,17 @@
 import {View, Text, StyleSheet, ScrollView, SafeAreaView, TextInput, StatusBar, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import { MagnifyingGlassIcon, CameraIcon, ArrowLeftStartOnRectangleIcon} from 'react-native-heroicons/outline';
-import { HeartIcon} from 'react-native-heroicons/solid';
+import { HeartIcon, UserIcon} from 'react-native-heroicons/solid';
 import { widthPercentageToDP as wp, 
     heightPercentageToDP as hp 
 } from 'react-native-responsive-screen';
 import Categorias from '../components/Categorias';
 import axios from 'axios';
 import Recipes from '../components/Recipes';
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { useFonts } from 'expo-font';
 import { getAuth, signOut } from "firebase/auth";
+
 
 export default function HomeScreen() {
 
@@ -179,16 +180,6 @@ export default function HomeScreen() {
                     contentContainerStyle={styles.scrollView}
                 >
 
-                {/* Botón de Corazón */}
-                <TouchableOpacity style={styles.heartButton}>
-                        <HeartIcon onPress={()=>navigation.navigate('Favorite')} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
-                </TouchableOpacity>
-
-                {/* Boton de Salir */}
-                <TouchableOpacity style={[styles.ArrowLeftStartOnRectangleIcon, isLoading ? styles.buttonDisabled : null]}>
-                        <ArrowLeftStartOnRectangleIcon onPress={handleSignOut} disabled={isLoading} size={hp(3)} strokeWidth={2} color={"#ff5c2e"} />
-                </TouchableOpacity>
-
                 {/* Bienvenida y Mensaje de Bienvenida*/}
                 <View style={styles.welcomeView}>
                     <Text style={styles.textNickname}>¡Hola, {user ? user.displayName : 'Artista de la Cocina!'}!</Text>
@@ -234,8 +225,11 @@ export default function HomeScreen() {
             
 
         </View>
+        
     );
 }
+
+
 
 const styles = StyleSheet.create({
     container: {
@@ -243,13 +237,13 @@ const styles = StyleSheet.create({
         backgroundColor: "#202020",
     },
     scrollView: {
-        paddingBottom: 50,
+        paddingBottom: 10,
         gap: 6,
-        paddingTop: 14,
+        paddingTop: 2,
     },
     welcomeView: {
         marginHorizontal: 20,
-        top: 90,
+        top: 10,
         marginBottom: 2,
     },
     textNickname: {
@@ -276,7 +270,7 @@ const styles = StyleSheet.create({
         borderRadius: 18,
         backgroundColor: "#F6F6F6",
         padding: 5,
-        top: 105,
+        top: 20,
     },
     glassIcon: {
         borderRadius: 10,
@@ -298,10 +292,10 @@ const styles = StyleSheet.create({
         right: hp(1),
     },
     categoriesView: {
-        top: 115,
+        top: 30,
     },
     recipesView: {
-        top: 125,
+        top: 30,
     },
     heartButton: {
         width: hp(5),
@@ -319,6 +313,22 @@ const styles = StyleSheet.create({
         right: (20),
         top: (50),
     },
+    userButton: {
+        width: hp(5),
+        height: hp(5),
+        backgroundColor: "#fff",
+        borderRadius: hp(2.5),
+        justifyContent: "center",
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 3,
+        position: 'absolute',
+        right: (62),
+        top: (50),
+    },
     ArrowLeftStartOnRectangleIcon: {
         width: hp(5),
         height: hp(5),
@@ -332,10 +342,15 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 3,
         position: 'absolute',
-        left: (20),
+        left: (40),
         top: (50),
     },
     buttonDisabled: {
         backgroundColor: '#ef9a9a',
+    },
+    menuButton: {
+        position: 'absolute',
+        left: 20,
+        top: 50,
     },
 });

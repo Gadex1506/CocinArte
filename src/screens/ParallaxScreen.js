@@ -60,7 +60,7 @@ export default function ParallaxScreen() {
         if (currentIndex < slides.length - 1) {
             flatListRef.current.scrollToIndex({ index: currentIndex + 1 });
         } else {
-            navigation.navigate("Home");
+            navigation.navigate('MainApp', { screen: 'Home' });
         }
     };
 
@@ -84,7 +84,7 @@ export default function ParallaxScreen() {
                 renderItem={({ item }) => (
                     <View style={styles.slide}>
                         <Image source={require("../../assets/images/background.png")} style={styles.fruitBackground} />
-                        <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate("Home")}>
+                        <TouchableOpacity style={styles.skipButton} onPress={() => navigation.navigate('MainApp', { screen: 'Home' })}>
                             <Text style={styles.skipText}>Omitir</Text>
                         </TouchableOpacity>
                         <Image source={item.image} style={styles.fastFood} />

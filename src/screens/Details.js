@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text,  ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
-import { HeartIcon } from "react-native-heroicons/solid";
+import { HeartIcon, PaperAirplaneIcon} from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
 import axios from 'axios';
 import CachedImage from "react-native-expo-cached-image";
@@ -11,9 +11,15 @@ import YoutubeIframe from 'react-native-youtube-iframe';
 import { useFavorites } from "../context/FavoriteContext";
 import { useFonts } from 'expo-font';
 
+
+
 export default function Details(props) {
 
+
+
     let item = props.route.params;
+
+    console.log(item);
 
     {/* Exportacion de fuente Nunito */}
     const [fontsLoaded] = useFonts({
@@ -145,6 +151,17 @@ export default function Details(props) {
             <TouchableOpacity  onPress={handleLike} style={styles.corazon}>
                 <HeartIcon size={24} color={noLike ? "red" : "grey"} />
             </TouchableOpacity>
+            <TouchableOpacity   onPress={() => navigation.navigate('Friends', {
+                      receta: {
+                        idMeal: meal.idMeal,
+                        strMeal: meal.strMeal,
+                        strMealThumb: meal.strMealThumb,
+                        strCategory: meal.strCategory,
+                      }
+                    })} 
+                    style={styles.compartir} >
+                <PaperAirplaneIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
+            </TouchableOpacity>
             </View>
             {/*Ingredientes y cantidades*/}
             <Text>
@@ -168,7 +185,7 @@ export default function Details(props) {
                             <Text style={styles.cell}>{translatedMeasures[index] || meal['strMeasure' + item] || '-'}</Text>
                         </View>
                     )}
-                    
+                    estimatedItemSize={50}
                 />
             </View>
 
@@ -253,6 +270,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     left: "82%",
     top: 10,
+  },
+  compartir: {
+    position: "absolute",
+    backgroundColor: "white",
+    width: 45,
+    height: 45,
+    borderRadius: 9999,
+    alignItems: "center",
+    justifyContent: "center",
+    left: "82%",
+    top: 60,
   },
   atras: {
     position: "absolute",

@@ -2,10 +2,10 @@ import { View, Text } from 'react-native';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SharedProvider } from '../context/SharedContext'; 
 
-//Importacion de las pantallas de la app
+// Importación de pantallas
 import WelcomeScreen from '../screens/WelcomeScreen';
-import HomeScreen from '../screens/HomeScreen';
 import ParallaxScreen from '../screens/ParallaxScreen';
 import Details from '../screens/Details';
 import Vision from '../screens/Vision';
@@ -16,35 +16,49 @@ import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import ResultRecognitionScreen from '../screens/ResultRecognitionScreen';
 import GenerateRecipe from '../screens/GenerateRecipeScreen';
+import Friends from '../screens/Friends';
 
-//Credenciales a Firebase
+// Drawer
+import DrawerNavigator from './Drawer';
+
+// Credenciales Firebase
 import '../components/FirebaseConfig';
+import { FriendsProvider } from '../context/FriendsContext';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigation() {
     return (
+        <SharedProvider>
         <FavoritesProvider>
-            <NavigationContainer>
-                <Stack.Navigator
-                    initialRouteName="Login"
-                    screenOptions={{
-                        headerShown: false
-                    }}
-                >
-                    <Stack.Screen name="Welcome" component={WelcomeScreen} />
-                    <Stack.Screen name="Login" component={Login} />
-                    <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
-                    <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
-                    <Stack.Screen name="Home" component={HomeScreen} />
-                    <Stack.Screen name="Parallax" component={ParallaxScreen} />
-                    <Stack.Screen name="Details" component={Details} />
-                    <Stack.Screen name="Vision" component={Vision} />
-                    <Stack.Screen name="ResultScreen" component={ResultRecognitionScreen} />
-                    <Stack.Screen name="GenerateRecipe" component={GenerateRecipe} />
-                    <Stack.Screen name="Favorite" component={Favorite} />
-                </Stack.Navigator>
-            </NavigationContainer>
+            <FriendsProvider>
+
+                <NavigationContainer>
+                    <Stack.Navigator
+                        initialRouteName="Login"
+                        screenOptions={{
+                            headerShown: false
+                        }}
+                    >
+                        <Stack.Screen name="Welcome" component={WelcomeScreen} />
+                        <Stack.Screen name="Login" component={Login} />
+                        <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} />
+                        <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+
+                        {/* Cambiado Home por DrawerNavigator */}
+                        <Stack.Screen name="MainApp" component={DrawerNavigator} />
+
+                        <Stack.Screen name="Parallax" component={ParallaxScreen} />
+                        <Stack.Screen name="Details" component={Details} />
+                        <Stack.Screen name="Vision" component={Vision} />
+                        <Stack.Screen name="Friends" component={Friends} />
+                        <Stack.Screen name="ResultScreen" component={ResultRecognitionScreen} />
+                        <Stack.Screen name="GenerateRecipe" component={GenerateRecipe} />
+                    </Stack.Navigator>
+                </NavigationContainer>
+                
+            </FriendsProvider>
         </FavoritesProvider>
+        </SharedProvider>
     );
 }

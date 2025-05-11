@@ -145,7 +145,7 @@ export default function ObjectDetection() {
             <StatusBar style='light'/>
 
             {/* Boton de regresar */}
-            <TouchableOpacity onPress={() => navigation.navigate("Home")} style={styles.atras} >
+            <TouchableOpacity onPress={() => navigation.navigate('MainApp', { screen: 'Home' })} style={styles.atras} >
                 <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
             </TouchableOpacity>
 

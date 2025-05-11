@@ -1,5 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -17,5 +18,7 @@ const app = initializeApp(firebaseConfig);
 // Obtiene y exporta la instancia de auth
 const auth = getAuth(app);
 
-export { auth };
+const firestore = getFirestore(app);
+
+export { auth, firestore };
 export default app; 
