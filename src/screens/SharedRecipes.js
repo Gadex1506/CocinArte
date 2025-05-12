@@ -38,14 +38,13 @@ export default function SharedRecipes() {
             clearNotification();
         });
 
-        // Devuelve la función de limpieza para remover el listener
         return unsubscribe;
     }, [navigation, clearNotification]); // Dependencias para useEffect
 
 
     const renderItem = ({ item }) => (
         <View style={styles.recipeCard}>
-            <Image source={{ uri: item.strMealThumb }} style={styles.recipeImage} /> {/* Usamos un estilo específico para la imagen de la receta */}
+            <Image source={{ uri: item.strMealThumb }} style={styles.recipeImage} />
             <View style={styles.infoContainer}>
                 <Text style={[styles.recipeName, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>{item.strMeal}</Text>
                 <View style={styles.buttonContainer}> {/* Contenedor para los botones */}
@@ -60,11 +59,11 @@ export default function SharedRecipes() {
         </View>
     );
 
-    // Mostramos loader o mensaje si las fuentes no han cargado
+    // Mostrar loader o mensaje si las fuentes no han cargado
     if (!fontsLoaded) {
         return (
             <View style={styles.loadingContainer}>
-                 <ActivityIndicator size="large" color="#ff5c2e" />
+                <ActivityIndicator size="large" color="#ff5c2e" />
             </View>
         );
     }
@@ -76,23 +75,23 @@ export default function SharedRecipes() {
 
             {/* Contenedor para el título y el botón de regreso */}
             <View style={styles.headerContainer}>
-                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                     <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
-                 </TouchableOpacity>
-                 <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Recetas Compartidas</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
+                </TouchableOpacity>
+                <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Recetas Compartidas</Text>
             </View>
 
 
             {sharedRecipes.length === 0 ? (
-                <View style={styles.emptyStateContainer}> {/* Contenedor para centrar el mensaje */}
-                     <Text style={[styles.noShared, { fontFamily: fontsLoaded ? 'Nunito-SemiBold' : 'System' }]}>No tienes recetas compartidas.</Text>
+                <View style={styles.emptyStateContainer}>
+                    <Text style={[styles.noShared, { fontFamily: fontsLoaded ? 'Nunito-SemiBold' : 'System' }]}>No tienes recetas compartidas.</Text>
                 </View>
             ) : (
                 <FlatList
                     data={sharedRecipes}
                     keyExtractor={(item) => item.idMeal}
                     renderItem={renderItem}
-                    contentContainerStyle={styles.listContentContainer} // Añadimos padding al FlatList
+                    contentContainerStyle={styles.listContentContainer}
                     showsVerticalScrollIndicator={false} // Ocultar la barra de scroll
                 />
             )}
@@ -104,102 +103,99 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#202020",
-        paddingTop: statusBarHeight, // Añadimos padding superior igual a la altura de la barra de estado
+        paddingTop: statusBarHeight,
     },
-    loadingContainer: { // Estilo para el estado de carga inicial (mientras cargan las fuentes)
-         flex: 1,
-         justifyContent: 'center',
-         alignItems: 'center',
-         backgroundColor: '#202020',
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#202020',
     },
-    headerContainer: { // Contenedor para el título y botón de regreso
+    headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center', // Centrar el título
-        paddingHorizontal: wp(4), // Padding a los lados
-        height: hp(7), // Altura fija para el encabezado
-        marginBottom: hp(2), // Espacio debajo del encabezado
+        justifyContent: 'center',
+        paddingHorizontal: wp(4),
+        height: hp(7),
+        marginBottom: hp(2),
     },
-    backButton: { // Estilo para el botón de regreso
-        position: 'absolute', // Posicionamiento absoluto
-        left: wp(4), // Alineado a la izquierda
-        zIndex: 1, // Asegura que esté por encima del título
-         backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo semi-transparente
-         padding: wp(2),
-         borderRadius: 9999, // Borde redondo
+    backButton: {
+        position: 'absolute',
+        left: wp(4),
+        zIndex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        padding: wp(2),
+        borderRadius: 9999,
     },
-    screenTitle: { // Estilo para el título principal de la pantalla
+    screenTitle: {
         fontSize: hp(3),
         color: "white",
         textAlign: "center",
-        flex: 1, // Permite que el título ocupe el espacio restante
+        flex: 1,
     },
     listContentContainer: {
-        paddingHorizontal: wp(4), // Padding a los lados de la lista
-        paddingBottom: hp(2), // Espacio al final de la lista
+        paddingHorizontal: wp(4),
+        paddingBottom: hp(2),
     },
-    emptyStateContainer: { // Contenedor para centrar el mensaje de estado vacío
+    emptyStateContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: wp(4),
     },
     noShared: {
-        color: "#b0b0b0", // Color gris claro
+        color: "#b0b0b0",
         textAlign: "center",
-        fontSize: hp(1.8), // Tamaño de fuente responsivo
-        // fontFamily se aplica directamente en el componente
+        fontSize: hp(1.8),
     },
     recipeCard: {
         flexDirection: "row",
-        backgroundColor: "#333333", // Fondo oscuro
-        borderRadius: 12, // Bordes más redondeados
-        marginBottom: hp(2), // Espacio entre tarjetas
+        backgroundColor: "#333333",
+        borderRadius: 12,
+        marginBottom: hp(2),
         overflow: "hidden",
         borderWidth: 1,
-        borderColor: '#444444', // Borde sutil
-        alignItems: 'center', // Centrar verticalmente el contenido de la tarjeta
+        borderColor: '#444444',
+        alignItems: 'center',
     },
-    recipeImage: { // Estilo específico para la imagen dentro de la tarjeta
-        width: wp(25), // Ancho responsivo
-        height: wp(25), // Altura responsiva (cuadrada)
-        borderRadius: 8, // Bordes redondeados para la imagen
-        marginRight: wp(4), // Espacio a la derecha de la imagen
+    recipeImage: {
+        width: wp(25),
+        height: wp(25),
+        borderRadius: 8,
+        marginRight: wp(4),
     },
     infoContainer: {
         flex: 1,
-        paddingVertical: hp(1.5), // Padding vertical responsivo
-        paddingRight: wp(4), // Padding a la derecha
+        paddingVertical: hp(1.5),
+        paddingRight: wp(4),
         justifyContent: "space-between",
     },
     recipeName: {
         color: "white",
-        fontSize: hp(1.8), // Tamaño de fuente responsivo
-        marginBottom: hp(1), // Espacio debajo del nombre
-        // fontFamily se aplica directamente en el componente
+        fontSize: hp(1.8),
+        marginBottom: hp(1),
     },
-    buttonContainer: { // Contenedor para los botones dentro de la tarjeta
+    buttonContainer: {
         flexDirection: "row",
-        justifyContent: "flex-end", // Alinear botones a la derecha
-        marginTop: hp(1), // Espacio arriba de los botones
+        justifyContent: "flex-end",
+        marginTop: hp(1),
     },
     detailButton: {
         backgroundColor: "#ff5c2e",
-        paddingVertical: hp(1), // Padding vertical responsivo
-        paddingHorizontal: wp(3), // Padding horizontal responsivo
-        borderRadius: 8, // Bordes redondeados
-        marginRight: wp(2), // Espacio entre botones
+        paddingVertical: hp(1),
+        paddingHorizontal: wp(3),
+        borderRadius: 8,
+        marginRight: wp(2),
     },
     removeButton: {
-        backgroundColor: "#dc2626", // Rojo más intenso
+        backgroundColor: "#dc2626",
         paddingVertical: hp(1),
         paddingHorizontal: wp(3),
         borderRadius: 8,
     },
     buttonText: {
         color: "white",
-        fontSize: hp(1.6), // Tamaño de fuente responsivo
-        fontWeight: 'bold', // Negrita
-        // fontFamily se aplica directamente en el componente
+        fontSize: hp(1.6),
+        fontWeight: 'bold',
     },
 });
