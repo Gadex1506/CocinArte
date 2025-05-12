@@ -202,9 +202,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold', // Negrita
         // fontFamily se aplica directamente en el componente
     },
-    // Estilos originales que ya no se usan o se han adaptado
-    // title: {}, // Reemplazado por screenTitle en headerContainer
-    // atras: {}, // Reemplazado por backButton en headerContainer
-    // image: {}, // Reemplazado por recipeImage
-    // buttons: {}, // Reemplazado por buttonContainer
 });
