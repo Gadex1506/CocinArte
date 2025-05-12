@@ -1,8 +1,7 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, StatusBar } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, StatusBar, SafeAreaView } from "react-native";
 import { useFavorites } from "../context/FavoriteContext";
 import { useNavigation } from "@react-navigation/native";
-import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useFonts } from 'expo-font';
 
@@ -10,7 +9,7 @@ export default function FavoritesScreen() {
     const { favorites, removeFavorite } = useFavorites();
     const navigation = useNavigation();
 
-    {/* Exportacion de fuente Nunito */}
+    // Exportación de fuente Nunito
     const [fontsLoaded] = useFonts({
         'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
         'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
@@ -19,99 +18,118 @@ export default function FavoritesScreen() {
         'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
     });
 
+    // Revisar que las fuentes se hayan cargado antes de renderizar
+    if (!fontsLoaded) {
+        return null;
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar style='light'/>
-            <Text style={styles.title}>Recetas Favoritas</Text>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.atras} >
-                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
-            </TouchableOpacity>
-            {favorites.length === 0 ? (
-                <Text style={styles.noFavorites}>No tienes recetas guardadas.</Text>
-            ) : (
-                <FlatList
-                    data={favorites}
-                    keyExtractor={(item) => item.idMeal}
-                    renderItem={({ item }) => (
-                        <View style={styles.recipeCard}>
-                            <Image source={{ uri: item.strMealThumb }} style={styles.image} />
-                            <View style={styles.infoContainer}>
-                                <Text style={styles.recipeName}>{item.strMeal}</Text>
-                                <View style={styles.buttons}>
-                                    <TouchableOpacity onPress={() => navigation.navigate("Details", item)} style={styles.detailButton}>
-                                        <Text style={styles.buttonText}>Ver Detalles</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => removeFavorite(item.idMeal)} style={styles.removeButton}>
-                                        <Text style={styles.buttonText}>Eliminar</Text>
-                                    </TouchableOpacity>
+            <SafeAreaView style={styles.safeArea}> {/* Envuelve el contenido principal en SafeAreaView */}
+
+                {favorites.length === 0 ? (
+                    <View style={styles.noFavoritesContainer}> {/* Contenedor para centrar el mensaje */}
+                        <Text style={styles.noFavorites}>No tienes recetas guardadas.</Text>
+                    </View>
+                ) : (
+                    <FlatList
+                        data={favorites}
+                        keyExtractor={(item) => item.idMeal}
+                        showsVerticalScrollIndicator={false} // Oculta la barra de scroll vertical
+                        contentContainerStyle={styles.flatListContent} // Estilo para el contenido de la lista
+                        renderItem={({ item }) => (
+                            <View style={styles.recipeCard}>
+                                <Image source={{ uri: item.strMealThumb }} style={styles.image} />
+                                <View style={styles.infoContainer}>
+                                    <Text style={styles.recipeName}>{item.strMeal}</Text>
+                                    <View style={styles.buttons}>
+                                        <TouchableOpacity onPress={() => navigation.navigate("Details", item)} style={styles.detailButton}>
+                                            <Text style={styles.buttonText}>Ver Detalles</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => removeFavorite(item.idMeal)} style={styles.removeButton}>
+                                            <Text style={styles.buttonText}>Eliminar</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             </View>
-                        </View>
-                    )}
-                />
-            )}
+                        )}
+                    />
+                )}
+            </SafeAreaView>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { 
-        flex: 1, 
-        backgroundColor: "#202020", 
-        padding: 20 
+    container: {
+        flex: 1,
+        backgroundColor: "#202020",
     },
-    title: { 
-        fontSize: 24, 
-        fontFamily: "Nunito-ExtraBold", 
-        color: "white", 
-        textAlign: "center", 
-        marginBottom: 20, 
-        top: 50 },
-    noFavorites: { 
-        color: "gray", 
-        textAlign: "center", 
-        marginTop: 20, 
-        fontSize: 18, 
-        top: 50,
-        fontFamily: "Nunito-Semibold",
+    safeArea: {
+        flex: 1,
     },
-    recipeCard: { 
-        flexDirection: "row", 
-        backgroundColor: "#303030", 
-        borderRadius: 10, 
-        marginBottom: 15, 
-        overflow: "hidden", 
-        top: 50 },
-    image: { 
-        width: 100, 
-        height: 100 
+    noFavoritesContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    infoContainer: { 
-        flex: 1, 
-        padding: 10, 
-        justifyContent: "space-between", 
+    noFavorites: {
+        color: "#969696",
+        textAlign: "center",
+        fontSize: hp(2.2),
+        fontFamily: "Nunito-SemiBold",
     },
-    recipeName: { 
-        color: "white", 
-        fontSize: 16, 
-        fontFamily: "Nunito-ExtraBold", 
+    flatListContent: {
+        paddingHorizontal: wp(4),
+        paddingTop: hp(2),
+        paddingBottom: hp(2),
     },
-    buttons: { 
-        flexDirection: "row", 
-        justifyContent: "space-between" 
+    recipeCard: {
+        flexDirection: "row",
+        backgroundColor: "#333333",
+        borderRadius: 15,
+        marginBottom: hp(2),
+        overflow: "hidden",
+        alignItems: 'center',
+        padding: wp(3),
     },
-    detailButton: { 
-        backgroundColor: "#ff5c2e", 
-        padding: 8, 
-        borderRadius: 5 
+    image: {
+        width: wp(25),
+        height: wp(25),
+        borderRadius: 10,
+        marginRight: wp(4),
     },
-    removeButton: { 
-        backgroundColor: "red", 
-        padding: 8, 
-        borderRadius: 5 
+    infoContainer: {
+        flex: 1,
+        justifyContent: "space-between",
+        height: wp(25),
     },
-    buttonText: { 
-        color: "white", 
+    recipeName: {
+        color: "white",
+        fontSize: hp(2.2),
         fontFamily: "Nunito-Bold",
+        marginBottom: hp(1),
+    },
+    buttons: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    detailButton: {
+        backgroundColor: "#ff5c2e",
+        paddingVertical: hp(1),
+        paddingHorizontal: wp(4),
+        borderRadius: 8,
+    },
+    removeButton: {
+        backgroundColor: "#ef4444",
+        paddingVertical: hp(1),
+        paddingHorizontal: wp(4),
+        borderRadius: 8,
+    },
+    buttonText: {
+        color: "white",
+        fontFamily: "Nunito-SemiBold",
+        fontSize: hp(1.6),
     },
 });

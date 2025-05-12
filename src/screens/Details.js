@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text,  ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native"; // Importar Dimensions
 import { ChevronLeftIcon } from "react-native-heroicons/outline";
 import { HeartIcon, PaperAirplaneIcon} from "react-native-heroicons/solid";
 import { useNavigation } from "@react-navigation/native";
@@ -12,13 +12,13 @@ import { useFavorites } from "../context/FavoriteContext";
 import { useFonts } from 'expo-font';
 import { GOOGLE_TRANSLATION_API } from '@env';
 
+const { width } = Dimensions.get('window'); // Obtiene el ancho de la ventana
+
 export default function Details(props) {
 
     let item = props.route.params;
 
-    console.log(item);
-
-    {/* Exportacion de fuente Nunito */}
+    // Exportación de fuente Nunito
     const [fontsLoaded] = useFonts({
       'Nunito-Regular': require('@expo-google-fonts/nunito/Nunito_400Regular.ttf'),
       'Nunito-Medium': require('@expo-google-fonts/nunito/Nunito_500Medium.ttf'),
@@ -29,19 +29,19 @@ export default function Details(props) {
 
     const [meal, setMeal] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [liked, setLiked] = useState(false);
     const navigation = useNavigation();
     const { favorites, addFavorite, removeFavorite } = useFavorites(); // Obtener funciones del contexto
 
-    // Verificar si la receta ya está en favoritos
-    const noLike = favorites.some((fav) => fav.idMeal === item.idMeal);
+    // Verifica si la receta ya está en favoritos
+    const isFavorite = favorites.some((fav) => fav.idMeal === item.idMeal);
 
-    // Funciones para la traduccion
+    // Estados para la traducción
     const [translatedIngredients, setTranslatedIngredients] = useState([]);
     const [translatedMeasures, setTranslatedMeasures] = useState([]);
-    const [translatedInstructions, setTranslatedInstructions] = useState("");
+    const [translatedInstructions, setTranslatedInstructions] = useState([]); // Cambiado a array
 
-    const indexIngredientes =(meal)=>{
+    // Obtiene los índices de los ingredientes con valor
+    const getIngredientIndexes = (meal) => {
         if(!meal) return[];
         let index = [];
         for (let i = 1; i<=20; i++){
@@ -56,353 +56,337 @@ export default function Details(props) {
       getMealData(item.idMeal);
     }, []);
 
-        // Definicion del headlelike`
-        const handleLike = () => {
-          if (noLike) {
-              removeFavorite(item.idMeal);
-          } else {
-              addFavorite(meal);
-          }
-      };
+    // Maneja la acción de añadir/eliminar de favoritos
+    const handleFavoriteToggle = () => {
+        if (isFavorite) {
+            removeFavorite(item.idMeal);
+        } else {
+            addFavorite(meal);
+        }
+    };
 
-    const getMealData =  async (id = item.idMeal) => {
+    // Obtiene los datos completos de la receta
+    const getMealData = async (id) => {
       try {
           const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
-          //console.log('Obteniendo Recetas', response.data);
-          if(response && response.data){
-              setMeal(response.data.meals[0]);
-              translateIngredients(response.data.meals[0]);
-              translateMeasures(response.data.meals[0]);
-              translateInstructions(response.data.meals[0].strInstructions);
+          if(response && response.data && response.data.meals){
+              const mealData = response.data.meals[0];
+              setMeal(mealData);
+              // Inicia la traducción una vez que se obtienen los datos
+              translateIngredients(mealData);
+              translateMeasures(mealData);
+              translateInstructions(mealData.strInstructions);
               setLoading(false);
+          } else {
+              setLoading(false); // Maneja el caso de no encontrar datos
           }
       } catch (error) {
-          console.log('error: ', error.message);
+          console.log('Error al obtener datos de la receta: ', error.message);
+          setLoading(false); // Asegura que el estado de carga se desactive
       }
     };
 
-    //Metodo para consumir la API de google Translate
+    // Consume la API de Google Translate
     const translateText = async (text) => {
-
-      const API_KEY = GOOGLE_TRANSLATION_API; // API de Google Translate
+      const API_KEY = GOOGLE_TRANSLATION_API;
       const url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
 
       try {
         const response = await axios.post(url, {
           q: text,
-          target: "es",
+          target: "es", // Traducir a español
         });
-
         return response.data.data.translations[0].translatedText;
-
       } catch (error) {
-        console.log("Error en la traduccion: " + error.message);
-        return text;
+        console.log("Error en la traducción: " + error.message);
+        return text; // Retorna el texto original en caso de error
       }
     };
 
-    //Metodo para traducir los ingredientes
+    // Traduce la lista de ingredientes
     const translateIngredients = async (meal) => {
-      const ingredients = indexIngredientes(meal).map(i => meal["strIngredient" + i]);
+      const ingredients = getIngredientIndexes(meal).map(i => meal["strIngredient" + i]);
       const translations = await Promise.all(ingredients.map(translateText));
       setTranslatedIngredients(translations);
     };
 
-    //Metodo para traducir las cantidades de los ingredientes
-    const translateMeasures = async (measure) => {
-      const measures = indexIngredientes(measure).map(i => measure["strMeasure" + i]);
+    // Traduce la lista de medidas
+    const translateMeasures = async (meal) => {
+      const measures = getIngredientIndexes(meal).map(i => meal["strMeasure" + i]);
       const translations = await Promise.all(measures.map(translateText));
       setTranslatedMeasures(translations);
     };
 
-    // Método para traducir las instrucciones
+    // Traduce las instrucciones y las divide en pasos
     const translateInstructions = async (instructions) => {
+      if (!instructions) return; // Maneja instrucciones vacías
       const translatedText = await translateText(instructions);
 
+      // Divide las instrucciones por punto y espacio, filtrando líneas vacías
       const instruccionesArray = translatedText.split(". ").filter(line => line.trim() !== "");
-      //console.log(instruccionesArray);
-
       setTranslatedInstructions(instruccionesArray);
     };
 
-    //Metodo para cargar video de la receta
+    // Extrae el ID de video de YouTube de una URL
     const getYoutubeVideoId = (url) => {
+      if (!url) return null; // Maneja URL vacía
       const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
       const match = url.match(regex);
       return match ? match[1] : null;
     };
 
-
-  return (
-
-    <ScrollView  contentContainerStyle={styles.container}>
-      {meal && (
-        <View style={styles.card}>
-          <Text style={styles.title}>{meal.strMeal}</Text>
-
-          <View >
-          <CachedImage source={{ uri: meal.strMealThumb }} sharedTransitionTag={meal.strMeal} style={styles.image} />
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.atras} >
-                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
-            </TouchableOpacity>
-            <TouchableOpacity  onPress={handleLike} style={styles.corazon}>
-                <HeartIcon size={24} color={noLike ? "red" : "grey"} />
-            </TouchableOpacity>
-            <TouchableOpacity   onPress={() => navigation.navigate('Friends', {
-                      receta: {
-                        idMeal: meal.idMeal,
-                        strMeal: meal.strMeal,
-                        strMealThumb: meal.strMealThumb,
-                        strCategory: meal.strCategory,
-                      }
-                    })} 
-                    style={styles.compartir} >
-                <PaperAirplaneIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
-            </TouchableOpacity>
+    // Muestra un indicador de carga mientras se obtienen los datos
+    if (loading || !fontsLoaded) {
+        return (
+            <View style={styles.loader}>
+                <ActivityIndicator size="large" color="#ff5c2e" />
             </View>
-            {/*Ingredientes y cantidades*/}
-            <Text>
-              
-            </Text>
+        );
+    }
 
-            <View style={styles.tableContainer}>
-                {/* Encabezado de la tabla */}
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Ingredientes</Text>
-                    <Text style={styles.headerText}>Medidas</Text>
-                </View>
-
-                {/* Lista de ingredientes y medidas */}
-                <FlashList
-                    data={indexIngredientes(meal)}
-                    keyExtractor={(item) => item.toString()}
-                    renderItem={({ item, index }) => (
-                        <View style={styles.row}>
-                            <Text style={styles.cell}>{translatedIngredients[index] || meal['strIngredient' + item] || '-'}</Text>
-                            <Text style={styles.cell}>{translatedMeasures[index] || meal['strMeasure' + item] || '-'}</Text>
-                        </View>
-                    )}
-                    estimatedItemSize={50}
+    // Renderiza la pantalla de detalles
+    return (
+        <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+            {/* Imagen de la receta */}
+            <View style={styles.imageContainer}>
+                <CachedImage
+                    source={{ uri: item.strMealThumb }}
+                    sharedTransitionTag={item.strMeal}
+                    style={styles.image}
                 />
+                 {/* Botón de atrás */}
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
+                </TouchableOpacity>
+                {/* Botón de favoritos */}
+                <TouchableOpacity onPress={handleFavoriteToggle} style={styles.favoriteButton}>
+                    <HeartIcon size={hp(3.5)} color={isFavorite ? "red" : "gray"} />
+                </TouchableOpacity>
+                 {/* Botón de compartir */}
+                 <TouchableOpacity
+                     onPress={() => navigation.navigate('Friends', {
+                         receta: {
+                             idMeal: meal.idMeal,
+                             strMeal: meal.strMeal,
+                             strMealThumb: meal.strMealThumb,
+                             strCategory: meal.strCategory,
+                         }
+                     })}
+                     style={styles.shareButton}
+                 >
+                     <PaperAirplaneIcon size={hp(3.5)} strokeWidth={2} color="#ff5c2e" />
+                 </TouchableOpacity>
             </View>
 
-            {/* Lista de Instrucciones */}
-            <View style={styles.instructionsContainer}>
-                <Text style={styles.subtitle}>Instrucciones</Text>
-                {
-                  translatedInstructions.length > 0 ? (
-                    translatedInstructions.map((line, index) => (
-                      <View key={index} style={styles.instructionTranslate}>
-                        <Text style={styles.stepNumber}>{index + 1}. </Text>
-                        <Text style={styles.instructionsText}>{line}.</Text> 
-                      </View>
+            {/* Información de la receta */}
+            <View style={styles.detailsContainer}>
+                {/* Título de la receta */}
+                <Text style={styles.recipeTitle}>{meal.strMeal}</Text>
 
-                      
-                    ))
-                  ) : (
-                    <ActivityIndicator size="large" color="#ff5c2e" />
-                  )
-                }
-            </View>
+                {/* Categoría */}
+                 {meal.strCategory && (
+                     <Text style={styles.categoryText}>Categoría: {meal.strCategory}</Text>
+                 )}
 
-            {/* Video de la Receta */}
-            {
-              meal.strYoutube && (
-                <View style={{ marginTop: 10 }}>
-                  <Text style={styles.subtitle}>Video Tutorial</Text>
-                  <View>
-                    <YoutubeIframe
-                      videoId={getYoutubeVideoId(meal.strYoutube)}
-                      //videoId='jCjSIhsOn2iNzf6t'
-                      height={ hp(25) }
-                    />
-                  </View>
+
+                {/* Ingredientes y cantidades */}
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Ingredientes</Text>
+                    <View style={styles.ingredientsTable}>
+                        {/* Encabezado de la tabla */}
+                        <View style={styles.tableHeader}>
+                            <Text style={styles.tableHeaderText}>Ingrediente</Text>
+                            <Text style={styles.tableHeaderText}>Cantidad</Text>
+                        </View>
+                        {/* Lista de ingredientes y medidas */}
+                        <FlashList
+                            data={getIngredientIndexes(meal)}
+                            keyExtractor={(index) => index.toString()}
+                            renderItem={({ item: index }) => (
+                                <View style={styles.tableRow}>
+                                    <Text style={styles.tableCell}>{translatedIngredients[index - 1] || meal['strIngredient' + index] || '-'}</Text>
+                                    <Text style={styles.tableCell}>{translatedMeasures[index - 1] || meal['strMeasure' + index] || '-'}</Text>
+                                </View>
+                            )}
+                            estimatedItemSize={40} // Ajusta según el tamaño promedio de tus filas
+                            scrollEnabled={false} // Deshabilita el scroll interno si la lista es corta
+                        />
+                    </View>
                 </View>
-              )
-            }
 
-        </View>
-      )}
+                {/* Instrucciones */}
+                <View style={styles.sectionContainer}>
+                    <Text style={styles.sectionTitle}>Instrucciones</Text>
+                    {
+                        translatedInstructions.length > 0 ? (
+                            translatedInstructions.map((line, index) => (
+                                <View key={index} style={styles.instructionStep}>
+                                    <Text style={styles.stepNumber}>{index + 1}. </Text>
+                                    <Text style={styles.instructionText}>{line}.</Text>
+                                </View>
+                            ))
+                        ) : (
+                            // Muestra un indicador si las instrucciones aún no se han traducido
+                            <ActivityIndicator size="small" color="#ff5c2e" />
+                        )
+                    }
+                </View>
 
+                {/* Video Tutorial */}
+                {
+                    meal.strYoutube && getYoutubeVideoId(meal.strYoutube) && (
+                        <View style={styles.sectionContainer}>
+                            <Text style={styles.sectionTitle}>Video Tutorial</Text>
+                            <View style={styles.videoContainer}>
+                                <YoutubeIframe
+                                    videoId={getYoutubeVideoId(meal.strYoutube)}
+                                    height={hp(25)}
+                                    width={width * 0.9} // Ajusta el ancho del video al 90% del ancho de la pantalla
+                                    play={false} // Opcional: para no iniciar automáticamente
+                                />
+                            </View>
+                        </View>
+                    )
+                }
 
-    </ScrollView >
-  );
+            </View>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    padding: 20,
-    backgroundColor: "#202020"
-  },
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-    paddingHorizontal: 20,
-    marginBottom: 10,
-  },
-  icono:{
-    width: "100%",
-    position: "absolute",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 110,
-    width: wp("75"),
-  },
-  corazon: {
-    position: "absolute",
-    backgroundColor: "white",
-    width: 45,
-    height: 45,
-    borderRadius: 9999,
-    alignItems: "center",
-    justifyContent: "center",
-    left: "82%",
-    top: 10,
-  },
-  compartir: {
-    position: "absolute",
-    backgroundColor: "white",
-    width: 45,
-    height: 45,
-    borderRadius: 9999,
-    alignItems: "center",
-    justifyContent: "center",
-    left: "82%",
-    top: 60,
-  },
-  atras: {
-    position: "absolute",
-    backgroundColor: "white",
-    width: 45,
-    height: 45,
-    borderRadius: 9999,
-    alignItems: "center",
-    justifyContent: "center",
-    right: "82%",
-    top: 10,
-  },
-  card: {
-    width: "100%",
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: "#202020",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-    marginBottom: 50,
-
-    top: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontFamily: "Nunito-ExtraBold",
-    textAlign: "center",
-    marginBottom: 10,
-    color: "white"
-  },
-  image: {
-    width: "100%",
-    height: 250,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  instructions: {
-    fontSize: 16,
-    textAlign: "justify",
-    fontFamily: "Nunito-Medium",
-  },
-  fetchButton: {
-    backgroundColor: "#007bff",
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 10,
-  },
-  fetchButtonText: {
-    color: "white",
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "bold",
-    fontFamily: "Nunito-Medium",
-  },
-  tableContainer: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginTop: 10,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    backgroundColor: '#E2E2E2',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  headerText: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 16,
-    color: '#ff5c2e',
-    fontFamily: "Nunito-Bold",
-  },
-  row: {
-    flexDirection: 'row',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    backgroundColor: "#F6F6F6",
-  },
-  cell: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 14,
-    color:"grey",
-    fontFamily: "Nunito-Semibold",
-  },
-  instructionsContainer: {
-    marginTop: 20,
-    paddingHorizontal: 10,
-  },
-  subtitle: {
-    fontSize: 20,
-    marginBottom: 10,
-    color: "#ff5c2e",
-    fontFamily: "Nunito-Bold",
-  },
-  instructionRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 8,
-  },
-  stepNumber: {
-    marginRight: 6,
-    fontSize: 16,
-    color: "#ff5c2e",
-    fontFamily: "Nunito-Bold",
-  },
-  instructionsText: {
-    fontSize: 16,
-    textAlign: "justify",
-    color: "#fff",
-    marginBottom: 16, // Agrega espacio entre líneas
-    lineHeight: 24, // Ajusta la altura de línea
-    fontFamily: "Nunito-Regular",
-  },
-  instructionTranslate: {
-    flexDirection: "row", 
-    marginBottom: 2, 
-    paddingRight: 30,
-  },
+    scrollViewContainer: {
+        flexGrow: 1, // Permite que el contenido crezca y se desplace
+        backgroundColor: "#202020", // Fondo oscuro
+        paddingBottom: hp(5), // Espacio al final del scroll
+    },
+    loader: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#202020", // Fondo oscuro para el loader
+    },
+    imageContainer: {
+        width: '100%',
+        height: hp(40), // Altura de la imagen
+        position: 'relative', // Permite posicionar elementos absolutos dentro
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        borderBottomLeftRadius: 30, // Bordes redondeados en la parte inferior
+        borderBottomRightRadius: 30,
+    },
+    backButton: {
+        position: 'absolute',
+        top: hp(5), // Ajusta la posición desde arriba
+        left: wp(4), // Ajusta la posición desde la izquierda
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo semi-transparente
+        padding: wp(2),
+        borderRadius: 9999, // Borde completamente redondo
+    },
+    favoriteButton: {
+        position: 'absolute',
+        top: hp(5), // Ajusta la posición desde arriba
+        right: wp(4), // Ajusta la posición desde la derecha
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo semi-transparente
+        padding: wp(2),
+        borderRadius: 9999, // Borde completamente redondo
+    },
+     shareButton: {
+        position: 'absolute',
+        top: hp(12), // Posicionado debajo del botón de favoritos
+        right: wp(4),
+        backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo semi-transparente
+        padding: wp(2),
+        borderRadius: 9999,
+    },
+    detailsContainer: {
+        paddingHorizontal: wp(4), // Padding a los lados
+        marginTop: hp(2), // Espacio arriba de los detalles
+    },
+    recipeTitle: {
+        fontSize: hp(3.5), // Tamaño del título
+        fontFamily: "Nunito-ExtraBold",
+        color: "white",
+        textAlign: "center",
+        marginBottom: hp(1.5), // Espacio debajo del título
+    },
+    categoryText: {
+        fontSize: hp(2),
+        fontFamily: "Nunito-SemiBold",
+        color: "#ff5c2e", // Color naranja para la categoría
+        textAlign: "center",
+        marginBottom: hp(2),
+    },
+    sectionContainer: {
+        marginTop: hp(3), // Espacio entre secciones
+    },
+    sectionTitle: {
+        fontSize: hp(2.5), // Tamaño del título de sección
+        fontFamily: "Nunito-Bold",
+        color: "white",
+        marginBottom: hp(1.5), // Espacio debajo del título de sección
+    },
+    ingredientsTable: {
+        backgroundColor: '#333333', // Fondo oscuro para la tabla
+        borderRadius: 10, // Bordes redondeados
+        overflow: 'hidden', // Asegura que los bordes redondeados se apliquen correctamente
+        borderWidth: 1, // Borde sutil
+        borderColor: '#444444', // Color del borde sutil
+    },
+    tableHeader: {
+        flexDirection: 'row',
+        backgroundColor: '#444444', // Fondo ligeramente más claro para el encabezado de la tabla
+        paddingVertical: hp(1.5),
+        borderBottomWidth: 1,
+        borderBottomColor: '#555555', // Color del borde inferior del encabezado
+    },
+    tableHeaderText: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: hp(1.8),
+        color: '#ff5c2e', // Color naranja para el texto del encabezado
+        fontFamily: "Nunito-Bold",
+    },
+    tableRow: {
+        flexDirection: 'row',
+        paddingVertical: hp(1.5),
+        borderBottomWidth: 1,
+        borderBottomColor: '#444444', // Color del borde entre filas
+    },
+    tableCell: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: hp(1.7),
+        color: "#b0b0b0", // Color gris claro para el texto de la celda
+        fontFamily: "Nunito-Regular",
+        paddingHorizontal: wp(1), // Pequeño padding horizontal en las celdas
+    },
+    instructionsContainer: {
+         marginTop: hp(3), // Espacio arriba de las instrucciones
+    },
+    instructionStep: {
+        flexDirection: "row",
+        alignItems: "flex-start",
+        marginBottom: hp(1.5), // Espacio entre pasos
+    },
+    stepNumber: {
+        marginRight: wp(2), // Espacio después del número
+        fontSize: hp(1.8),
+        color: "#ff5c2e", // Color naranja para el número del paso
+        fontFamily: "Nunito-Bold",
+    },
+    instructionText: {
+        flex: 1, // Permite que el texto ocupe el espacio restante y se ajuste
+        fontSize: hp(1.8),
+        textAlign: "justify",
+        color: "#fff", // Color blanco para el texto de la instrucción
+        lineHeight: hp(2.5), // Ajusta la altura de línea para mejor legibilidad
+        fontFamily: "Nunito-Regular",
+    },
+    videoContainer: {
+        marginTop: hp(1.5), // Espacio arriba del video
+        alignItems: 'center', // Centra el video horizontalmente
+    },
 });

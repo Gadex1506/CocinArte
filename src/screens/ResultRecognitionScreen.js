@@ -41,7 +41,7 @@ export default function ResultRecognitionScreen() {
 
             {/* Boton de regresar */}
             <TouchableOpacity onPress={() => navigation.navigate("Vision")} style={styles.atras} >
-                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
+                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#f3a006" right={1.5} />
             </TouchableOpacity>
 
             {/* Imagen de la foto tomada */}
@@ -86,10 +86,11 @@ export default function ResultRecognitionScreen() {
                 )}
             />
 
+            {/* Boton de IA */}
             <TouchableOpacity onPress={() => navigation.navigate('GenerateRecipe', {ingredients})} style={styles.button} >
                 <Image 
                     source={require('../../assets/icons/10.png')}
-                    style={{ width: 45, height: 45, tintColor: '#0277BD' }}
+                    style={styles.aibutton}
                 />
             </TouchableOpacity>
             
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
         marginTop: 70,
     },
     resultTitle: {
-        color: '#ff5c2e',
+        color: '#f3a006',
         fontSize: 20,
         marginBottom: 10,
         fontFamily: 'Nunito-ExtraBold',
@@ -163,15 +164,23 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     button: {
-        //position: "absolute",
-        backgroundColor: "white",
-        width: 62,
-        height: 62,
-        borderRadius: 9999,
+        backgroundColor: '#f3a006',
+        width: hp(7.1),
+        height: hp(7.1),
+        borderRadius: 9999, // Borde redondo
         alignItems: "center",
         justifyContent: "center",
-        //right: "82%",
-        top: hp(2),
+        marginTop: hp(3),
+        shadowColor: '#000', // Sombra
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4.65,
+        elevation: 6,
+    },
+    aibutton: {
+        width: hp(5),
+        height: hp(5),
+        tintColor: '#fff',
     },
     aiText: {
         fontSize: 18,

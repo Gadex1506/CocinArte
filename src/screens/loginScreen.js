@@ -219,7 +219,7 @@ export default function Login() {
                     </View>
 
                     <TouchableOpacity 
-                        style={[styles.button, isLoading ? styles.buttonDisabled : null]} 
+                        style={styles.button} 
                         onPress={handleLogin}
                         disabled={isLoading}
                         >
@@ -315,14 +315,14 @@ const styles = StyleSheet.create({
         top: hp("40%"),
     },
     button: {
-        backgroundColor: '#FFE38F',
+        backgroundColor: '#ff5c2e',
         padding: 14,
         borderRadius: 18,
         top: hp("38%"),
         marginHorizontal: 100,
     },
         buttonDisabled: {
-        backgroundColor: '#FFE38F',
+        backgroundColor: '#ff5c2e',
     },
     buttonText: {
         fontFamily: "Nunito-Bold",

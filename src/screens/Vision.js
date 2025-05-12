@@ -122,10 +122,10 @@ export default function ObjectDetection() {
                     'Content-Type': 'application/json',
                 },
             });
-      
+
             const concepts = response.data.outputs[0].data.concepts;
             const detectedLabels = concepts.map(item => item.name);
-      
+
             setIsProcessing(false);
             navigation.navigate('ResultScreen', {
                 image: imageUri,
@@ -136,7 +136,7 @@ export default function ObjectDetection() {
             console.error('Error con Clarifai API:', error?.response?.data || error.message);
             //setTextDetected('Error al procesar con Clarifai');
         }
-      
+
         //setIsProcessing(false);
     };
 
@@ -147,7 +147,7 @@ export default function ObjectDetection() {
 
             {/* Boton de regresar */}
             <TouchableOpacity onPress={() => navigation.navigate('MainApp', { screen: 'Home' })} style={styles.atras} >
-                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" right={1.5} />
+                <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#f3a006" right={1.5} />
             </TouchableOpacity>
 
             {/* Lottie Imagen de Comida Pasando */}
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
         top: hp(62),
     },
     subtitle: {
-        color: "#ff5c2e",
+        color: "#f3a006",
     },
     image: {
         position: "absolute",
@@ -244,24 +244,25 @@ const styles = StyleSheet.create({
     },
     photobutton: {
         position: "absolute",
-        backgroundColor: '#fff',
+        backgroundColor: '#f3a006',
         padding: 10,
         borderRadius: 5,
-        marginBottom: 10,
-        bottom: hp(19),
+        marginBottom: 20,
+        bottom: hp(18),
     },
     selectphotobutton: {
         position: "absolute",
-        backgroundColor: '#fff',
+        backgroundColor: '#f3a006',
         padding: 10,
         borderRadius: 5,
         marginBottom: 10,
-        bottom: hp(12),
+        bottom: hp(11),
     },
     buttonText: {
-        color: '#202020',
-        fontFamily: "Nunito-Bold",
-        fontSize: 16,
+        color: '#fff',
+        fontFamily: "Nunito-ExtraBold",
+        padding: hp(0.5),
+        fontSize: 18,
     },
     resultTitle: {
         position: "absolute",
