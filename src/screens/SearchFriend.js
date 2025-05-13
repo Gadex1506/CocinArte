@@ -2,7 +2,7 @@ import { View, Text, TextInput, Button, Alert, StyleSheet, SafeAreaView, ScrollV
 import { useState } from 'react';
 import { firestore } from '../components/FirebaseConfig';
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import { agregarAmigo } from '../components/Friend';  // Importamos la función para agregar amigo
+import { agregarAmigo } from '../components/Friend';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useFonts } from 'expo-font';
 
@@ -20,7 +20,7 @@ export default function BuscarAmigosScreen() {
     'Nunito-ExtraBold': require('@expo-google-fonts/nunito/Nunito_800ExtraBold.ttf'),
   });
 
-  // Asegurarse de que las fuentes hayan cargado correctamente antes de continuar
+  // Se asegura que las fuentes hayan cargado correctamente antes de continuar
   if (!fontsLoaded) {
     return null;
   }
@@ -48,7 +48,7 @@ export default function BuscarAmigosScreen() {
           correo: user.email,
         };
         setResultado(usuarioData);
-        setUsuarioEncontrado(usuarioData); // Guardamos al usuario encontrado
+        setUsuarioEncontrado(usuarioData); // Guarda al usuario encontrado
       }
     } catch (error) {
       console.error("Error al buscar usuario:", error);
@@ -73,8 +73,8 @@ export default function BuscarAmigosScreen() {
       Alert.alert('Amigo agregado', `${nombre} ha sido agregado a tu lista de amigos.`);
     }
 
-    setUsuarioEncontrado(null);  // Reiniciamos después de agregar
-    setResultado(null);  // Reiniciamos el resultado mostrado
+    setUsuarioEncontrado(null);  // Reiniciar después de agregar
+    setResultado(null);  // Reiniciar el resultado mostrado
     setCorreo(''); // Limpiar el campo de correo
   };
 
@@ -85,7 +85,7 @@ export default function BuscarAmigosScreen() {
           <Text style={styles.title}>Buscar Amigos</Text>
           <TextInput
             placeholder="Correo del amigo"
-            placeholderTextColor="#969696" // Color del placeholder
+            placeholderTextColor="#969696"
             value={correo}
             onChangeText={setCorreo}
             style={styles.input}
@@ -96,7 +96,7 @@ export default function BuscarAmigosScreen() {
             <Text style={styles.buttonText}>Buscar Amigo</Text>
           </TouchableOpacity>
 
-          {/* Mostramos la tarjeta del amigo si se encontró */}
+          {/* Se muestra la tarjeta del amigo si se encontró */}
           {usuarioEncontrado && (
             <View style={styles.friendCard}>
               <Text style={styles.friendName}>{usuarioEncontrado.nombre}</Text>

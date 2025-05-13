@@ -99,7 +99,7 @@ export default function RecipeImage({ recipeTitle, fontsLoaded }) {
     }, [recipeTitle, fontsLoaded]); // Dependencia del recipeTitle y fontsLoaded
 
     return (
-        <View style={styles.imageContainer}> {/* Contenedor para la imagen */}
+        <View style={styles.imageContainer}>
             {imageLoading ? (
                 // Muestra el indicador de carga de la imagen si imageLoading es true
                 <ActivityIndicator size="large" color="#ff5c2e" />

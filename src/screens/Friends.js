@@ -1,21 +1,21 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native'; // Importamos StatusBar
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, ActivityIndicator, StatusBar } from 'react-native';
 import { useFriends } from '../context/FriendsContext';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { getAuth } from 'firebase/auth';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useFonts } from 'expo-font';
-import { useNavigation } from "@react-navigation/native"; // Importamos useNavigation
-import { ChevronLeftIcon } from "react-native-heroicons/outline"; // Importamos el icono
+import { useNavigation } from "@react-navigation/native";
+import { ChevronLeftIcon } from "react-native-heroicons/outline";
 
-const statusBarHeight = StatusBar.currentHeight || 0; // Obtiene la altura de la barra de estado
+const statusBarHeight = StatusBar.currentHeight || 0;
 
 export default function Friends() {
     const route = useRoute();
     const { receta } = route.params || {};
 
     const { amigos, loading, eliminarAmigo, compartirReceta, cargarAmigos } = useFriends();
-    const navigation = useNavigation(); // Inicializamos useNavigation
+    const navigation = useNavigation();
 
     // Cargar las fuentes Nunito
     const [fontsLoaded] = useFonts({
@@ -34,14 +34,15 @@ export default function Friends() {
                 <Text style={[styles.friendEmail, { fontFamily: fontsLoaded ? 'Nunito-Regular' : 'System' }]}>{item.correo}</Text>
             </View>
             <View style={styles.buttonContainer}>
-                {/* Solo mostramos el botón Compartir si hay una receta para compartir */}
+
+                {/* Solo se muestra el botón Compartir si hay una receta para compartir */}
                 {receta && (
-                     <TouchableOpacity
-                         onPress={() => compartirReceta(item.id, receta)}
-                         style={styles.shareButton}
-                     >
-                         <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'Nunito-Bold' : 'System' }]}>Compartir</Text>
-                     </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => compartirReceta(item.id, receta)}
+                        style={styles.shareButton}
+                    >
+                        <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'Nunito-Bold' : 'System' }]}>Compartir</Text>
+                    </TouchableOpacity>
                 )}
                 <TouchableOpacity
                     style={styles.deleteButton}
@@ -49,6 +50,7 @@ export default function Friends() {
                 >
                     <Text style={[styles.buttonText, { fontFamily: fontsLoaded ? 'Nunito-Bold' : 'System' }]}>Eliminar</Text>
                 </TouchableOpacity>
+
             </View>
         </View>
     );
@@ -74,14 +76,14 @@ export default function Friends() {
     if (!loading && amigos.length === 0) {
         return (
             <View style={styles.emptyStateContainer}>
-                 <StatusBar style='light'/> {/* Aseguramos la barra de estado también en este estado */}
-                 {/* Contenedor para el título y el botón de regreso */}
-                 <View style={styles.headerContainer}>
-                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                         <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
-                     </TouchableOpacity>
-                     <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Mis Amigos</Text>
-                 </View>
+                <StatusBar style='light'/>
+                {/* Contenedor para el título y el botón de regreso */}
+                <View style={styles.headerContainer}>
+                    <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                        <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
+                    </TouchableOpacity>
+                    <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Mis Amigos</Text>
+                </View>
                 <Text style={[styles.emptyStateText, { fontFamily: fontsLoaded ? 'Nunito-Regular' : 'System' }]}>Aún no tienes amigos agregados.</Text>
             </View>
         );
@@ -90,14 +92,14 @@ export default function Friends() {
 
     return (
         <View style={styles.container}>
-            <StatusBar style='light'/> {/* Aseguramos la barra de estado */}
+            <StatusBar style='light'/>
 
             {/* Contenedor para el título y el botón de regreso */}
             <View style={styles.headerContainer}>
-                 <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                     <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
-                 </TouchableOpacity>
-                 <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Mis Amigos</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#ff5c2e" />
+                </TouchableOpacity>
+                <Text style={[styles.screenTitle, { fontFamily: fontsLoaded ? 'Nunito-ExtraBold' : 'System' }]}>Mis Amigos</Text>
             </View>
 
             <FlatList
@@ -115,12 +117,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#202020',
-        paddingTop: statusBarHeight, // Añadimos padding superior igual a la altura de la barra de estado
+        paddingTop: statusBarHeight,
     },
     listContentContainer: {
-        paddingHorizontal: wp(5), // Aplicamos padding responsivo horizontal
-        paddingBottom: hp(2), // Espacio al final de la lista
-        // Eliminamos paddingTop ya que el headerContainer ya proporciona espacio
+        paddingHorizontal: wp(5),
+        paddingBottom: hp(2),
     },
     loader: {
         flex: 1,
@@ -128,9 +129,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#202020',
     },
-    emptyStateContainer: { // Estilo para el contenedor del estado vacío
+     // Estilo para el contenedor del estado vacío
+    emptyStateContainer: {
         flex: 1,
-        // Eliminamos justify y align para que el headerContainer tome control
         backgroundColor: '#202020',
         paddingHorizontal: wp(5),
     },
@@ -140,7 +141,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginTop: hp(2),
     },
-    // Nuevos estilos para el encabezado y botón de regreso, copiados de SharedRecipes.js
     headerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -157,12 +157,12 @@ const styles = StyleSheet.create({
         padding: wp(2),
         borderRadius: 9999,
     },
-    screenTitle: { // Estilo para el título principal de la pantalla
-        fontSize: hp(3), // Ajustamos el tamaño para que quepa mejor en el encabezado
+     // Estilo para el título principal de la pantalla
+    screenTitle: {
+        fontSize: hp(3),
         color: '#ffffff',
         textAlign: 'center',
-        flex: 1, // Permite que el título ocupe el espacio restante
-        // Eliminamos marginTop y marginBottom ya que el headerContainer los maneja
+        flex: 1,
     },
     friendItem: {
         backgroundColor: '#333333',
